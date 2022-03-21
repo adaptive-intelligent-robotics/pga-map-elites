@@ -1,0 +1,91 @@
+Bootstrap: library
+From: airl_lab/default/airl_env:bare_ci
+
+%labels
+    Author manon.flageat18@imperial.ac.uk
+    Version v0.0.1
+
+%post
+   export LD_LIBRARY_PATH="/workspace/lib:$LD_LIBRARY_PATH"
+
+   mkdir -p /git/sferes2/modules
+   cd /git/sferes2/
+   apt-get update
+   apt-get upgrade -y
+   DEBIAN_FRONTEND=noninteractive apt-get install -y python3-git python3-matplotlib python3-pip libsdl1.2-dev libomp-dev ffmpeg
+   apt-get install -y gcc
+   apt-get install -y libboost-system-dev
+   rm -rf /var/lib/apt/lists/*
+   pip3 install --upgrade pip
+   pip3 install torch==1.7.1
+   pip3 install numpy==1.19.5
+   pip3 install gym==0.15.4
+   pip3 install pybullet==3.0.8
+   pip3 install Cython==0.29.21
+   pip3 install scikit-learn==0.21.3
+   pip3 install ribs
+
+   # All QDGym
+   if [ ! -z "${CI_JOB_TOKEN}" ] # this enables the automated build in the CI environment
+     then
+       pip3 install git+https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.doc.ic.ac.uk/AIRL/students_projects/2019-2020/olle_nilsson/QDgym.git#egg=QDgym
+       pip3 install git+https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.doc.ic.ac.uk/AIRL/research_projects/manon_flageat/qdgym-deterministic.git#egg=QDgymDeterministic
+   elif [ ! -z "${PERSONAL_TOKEN}" ]
+     then
+       pip3 install git+https://oauth:${PERSONAL_TOKEN}@gitlab.doc.ic.ac.uk/AIRL/students_projects/2019-2020/olle_nilsson/QDgym.git#egg=QDgym
+       pip3 install git+https://oauth:${PERSONAL_TOKEN}@gitlab.doc.ic.ac.uk/AIRL/research_projects/manon_flageat/qdgym-deterministic.git#egg=QDgymDeterministic
+   else
+       pip3 install git+https://gitlab.doc.ic.ac.uk/AIRL/students_projects/2019-2020/olle_nilsson/QDgym.git#egg=QDgym
+       pip3 install git+https://gitlab.doc.ic.ac.uk/AIRL/research_projects/manon_flageat/qdgym-deterministic.git#egg=QDgymDeterministic
+   fi
+   pip3 install seaborn pandas GPUtil psutil
+   pip3 install brewer2mpl
+   pip3 install tabulate
+   pip3 install python-gitlab
+   
+   mkdir -p /git/sferes2/exp/pga-map-elites-telo
+   cd /git/sferes2/exp/
+   #The above is a complete hack to make this work with the standard singularity scripts
+   # more code can come here
+   # ...
+   # ...
+   #====================================================================================================
+   exit 0 #NOTFORFINAL - the lines below this "exit" will be executed only when building the final image
+   #====================================================================================================
+   if [ ! -z "${CI_JOB_TOKEN}" ] # this enables the automated build in the CI environment
+     then
+       git clone  --recurse-submodules --single-branch --branch manon https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.doc.ic.ac.uk/AIRL/research_projects/manon_flageat/pga-map-elites-telo.git ./pga-map-elites-telo
+   elif [ ! -z "${PERSONAL_TOKEN}" ]
+     then
+       git clone  --recurse-submodules --single-branch --branch manon https://oauth:${PERSONAL_TOKEN}@gitlab.doc.ic.ac.uk/AIRL/research_projects/manon_flageat/pga-map-elites-telo.git ./pga-map-elites-telo
+   else
+       git clone  --recurse-submodules --single-branch --branch manon https://gitlab.doc.ic.ac.uk/AIRL/research_projects/manon_flageat/pga-map-elites-telo.git ./pga-map-elites-telo
+   fi
+
+%runscript
+    CURPATH=$(pwd)
+    cd /git/sferes2/exp/pga-map-elites-telo
+
+    DIRNAME=results_pga-map-elites
+    mkdir -p $CURPATH/$DIRNAME/
+
+    PATHNAME=$(date +%Y-%m-%d_%H_%M_%S)_$$
+    tmp_dir=$(mktemp -d -p $CURPATH/$DIRNAME/ $PATHNAME.XXX)
+    mkdir -p $tmp_dir
+    echo $tmp_dir
+
+    # Run
+    python3 run_experiment.py --save_path $tmp_dir "$@"
+
+    # Analysis
+    python3 run_plots.py --save_path $CURPATH/$DIRNAME --results_path $CURPATH/$DIRNAME --progress --archive 
+
+%apprun Analysis
+    cd /git/sferes2/exp/pga-map-elites-telo
+    PATH_ANALYSIS=$1
+    shift
+    python3 run_plots.py --save_path $PATH_ANALYSIS --results_path $PATH_ANALYSIS --progress --archive "$@"
+    python3 ./submodules/gitlab_notebook/gen_report.py $PATH_ANALYSIS 
+
+%help
+    This is the TELO implementation of PGA-MAP-Elites. 

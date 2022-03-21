@@ -1,0 +1,9 @@
+--algo=CMA-ME
+--save_stat_period=20000
+--save_archive_period=50000
+--num_cpu=24
+--max_evals=1000000
+--neurons_list=128 128
+--nb_reeval=50
+--cvt_samples=100000
+--eval_batch_size=100
