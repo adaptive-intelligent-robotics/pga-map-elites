@@ -87,9 +87,9 @@ class ReplayBuffer(object):
         for _ in range(steps):
             ind = np.random.randint(0, self.size, size=batch_size)
             # get states
-            states.append(torch.FloatTensor(self.state[ind]).to(self.device))
+            states.append(self.state[ind])
 
-        return states
+        return torch.FloatTensor(states).to(self.device)
 
 
     def save(self, filename):

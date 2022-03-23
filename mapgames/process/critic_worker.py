@@ -78,9 +78,7 @@ def critic_worker(replay_fn,
                 states = replay_buffer.sample_state(train_batch_size, nr_of_steps_act)
 
                 # send the latest critic, the latest actors, sampled states, the last critic loss/training time
-                remote.send((copy.deepcopy(critic.critic), [out_actor], \
-                             copy.deepcopy([copy.deepcopy(state.detach()) for state in states]), \
-                             critic_loss.detach(), train_time))
+                remote.send((critic.critic, [out_actor], states, critic_loss.detach(), train_time))
 
                 global_sync.clear()
                 #print("Flag back to false")

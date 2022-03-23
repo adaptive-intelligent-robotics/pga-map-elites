@@ -63,7 +63,7 @@ class PGVariation():
         offspring_controllers = [None] * N
         for n in range(N):
             self.actors_train_in_queue.put((n, copy.deepcopy(parent_controllers[n].x), \
-                                            copy.deepcopy(critic), copy.deepcopy(states), \
+                                            copy.deepcopy(critic), copy.deepcopy(states.detach()), \
                                             self.lr, self.nr_of_steps_act))
 
         for _ in range(N):
