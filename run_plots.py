@@ -85,8 +85,6 @@ if __name__ == "__main__":
 	    min_fit = None if args.min_fitness == "" else float(args.min_fitness),
 	    max_fit = None if args.max_fitness == "" else float(args.max_fitness),
 	    archive = args.archive,
-	    impact = args.impact,
-	    variance = args.variance,
 	    progress = args.progress,
 	    variation = args.variation,
 	    visualisation = args.visualisation,

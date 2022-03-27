@@ -26,18 +26,7 @@ From: airl_lab/default/airl_env:bare_ci
    pip3 install ribs
 
    # All QDGym
-   if [ ! -z "${CI_JOB_TOKEN}" ] # this enables the automated build in the CI environment
-     then
-       pip3 install git+https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.doc.ic.ac.uk/AIRL/students_projects/2019-2020/olle_nilsson/QDgym.git#egg=QDgym
-       pip3 install git+https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.doc.ic.ac.uk/AIRL/research_projects/manon_flageat/qdgym-deterministic.git#egg=QDgymDeterministic
-   elif [ ! -z "${PERSONAL_TOKEN}" ]
-     then
-       pip3 install git+https://oauth:${PERSONAL_TOKEN}@gitlab.doc.ic.ac.uk/AIRL/students_projects/2019-2020/olle_nilsson/QDgym.git#egg=QDgym
-       pip3 install git+https://oauth:${PERSONAL_TOKEN}@gitlab.doc.ic.ac.uk/AIRL/research_projects/manon_flageat/qdgym-deterministic.git#egg=QDgymDeterministic
-   else
-       pip3 install git+https://gitlab.doc.ic.ac.uk/AIRL/students_projects/2019-2020/olle_nilsson/QDgym.git#egg=QDgym
-       pip3 install git+https://gitlab.doc.ic.ac.uk/AIRL/research_projects/manon_flageat/qdgym-deterministic.git#egg=QDgymDeterministic
-   fi
+   pip3 install git+https://github.com/adaptive-intelligent-robotics/QDgym_extended.git#egg=QDgym_extended
    pip3 install seaborn pandas GPUtil psutil
    pip3 install brewer2mpl
    pip3 install tabulate

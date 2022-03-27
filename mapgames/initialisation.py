@@ -6,8 +6,7 @@ import gym
 gym.logger.set_level(40)
 
 import os
-import QDgym
-import QDgymDeterministic
+import QDgym_extended
 from sklearn.neighbors import KDTree
 from functools import partial
 from itertools import count
