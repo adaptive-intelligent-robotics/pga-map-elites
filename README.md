@@ -50,18 +50,22 @@ The main part of the code contains the following files and folders:
 
 The results from the experiments can be reproduced by running `run_experiment.py`. 
 This script takes a range of arguments that are easiest to pass as a .txt by using the `--config_file` argument. You can find the config files for all algorithms in the `configure_experiment` folder. For example to run PGA-MAP-Elites with the parameters from the paper:
-
 ```shell script
 python3 run_experiment.py --config_file configure_experiment/pga_config.txt
 ```
 
 These config files do not define the experiment you want to run, by default it runs the QDAntBulletEnv-v0 environment, to change it to QDWalker2DBulletEnv-v0 for example, you can run:
-
 ```shell script
 python3 run_experiment.py --config_file configure_experiment/pga_config.txt --env QDWalker2DBulletEnv-v0
 ```
 
+If you want to run a short-time test for a smaller number of evaluations, for example 100000 evaluations instead of 1000000, you can use the following command:
+```shell script
+python3 run_experiment.py --config_file configure_experiment/pga_config.txt --max_evals 100000
+```
+
 You can find the list of possible environments and more details about the arguments passed by the config files in `run_experiment.py`.
+Be careful that the seed is fixed for a given run and needs to be passed as an argument using `--seed`. For the results presented in the paper, we used a different seed for each run of each algorithm. 
 
 ## Analysis
 
