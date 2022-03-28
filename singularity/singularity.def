@@ -20,18 +20,18 @@ From: airl_lab/default/airl_env:bare_ci
    pip3 install -r requirements.txt
    pip3 install git+https://github.com/adaptive-intelligent-robotics/QDgym_extended.git#egg=QDgym_extended
    
-   mkdir -p /workspace/pga-map-elites-telo/
+   mkdir -p /workspace/pga-map-elites/
 
    #====================================================================================================
    exit 0 #NOTFORFINAL - the lines below this "exit" will be executed only when building the final image
    #====================================================================================================
 
-   git clone https://gitlab.doc.ic.ac.uk/AIRL/research_projects/manon_flageat/pga-map-elites-telo.git ./pga-map-elites-telo
+   git clone https://github.com/adaptive-intelligent-robotics/pga-map-elites.git ./pga-map-elites
 
 %runscript
     # Create result folder
     CURPATH=$(pwd)
-    cd /workspace/pga-map-elites-telo
+    cd /workspace/pga-map-elites
     DIRNAME=results_pga-map-elites
     mkdir -p $CURPATH/$DIRNAME/
     PATHNAME=$(date +%Y-%m-%d_%H_%M_%S)_$$
@@ -46,7 +46,7 @@ From: airl_lab/default/airl_env:bare_ci
     python3 run_plots.py --save_path $CURPATH/$DIRNAME --results_path $CURPATH/$DIRNAME --progress --archive 
 
 %apprun Analysis
-    cd /workspace/pga-map-elites-telo
+    cd /workspace/pga-map-elites
     PATH_ANALYSIS=$1
     shift
     python3 run_plots.py --save_path $PATH_ANALYSIS --results_path $PATH_ANALYSIS --progress --archive "$@"
