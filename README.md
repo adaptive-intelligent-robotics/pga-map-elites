@@ -1,99 +1,88 @@
-This is the code for PGA-MAP-Elites Algorithm. 
 
-### Introduction
+# Benefits of policy-gradient in PGA-MAP-Elites
 
-Running the code requires installing `singularity`. Instructions for which can be found [here](https://sylabs.io/guides/3.5/user-guide/quick_start.html#quick-installation-steps). The easiest way is to consult the [AIRL WIKI](https://gitlab.doc.ic.ac.uk/AIRL/AIRL_WIKI) which containes detailed instructions for installing `singularity` on different systems. 
-To run the code locally first clone the repo:
+This repository contains the code associated with [Benefits of policy-gradient in PGA-MAP-Elites](https://www.imperial.ac.uk/adaptive-intelligent-robotics).
 
+This code proposes an implementation of several algorithms: 
++ MAP-Elites algorithm from [Illuminating search spaces by mapping elites](https://arxiv.org/pdf/1504.04909.pdf)
++ TD3 proposed in [Addressing Function Approximation Error in Actor-Critic Methods](https://arxiv.org/pdf/1802.09477.pdf)
++ PGA-MAP-Elites first introduced in [Policy Gradient Assisted MAP-Elites](https://dl.acm.org/doi/pdf/10.1145/3449639.3459304?casa_token=6iKdMjVJXLoAAAAA:lzuKlS8Gm_-g_AFIBYFA_g790NVOX6Y615n9SoG5zGG9fHQH7xf0RSKE__5a3qsOSswKRM1cErTymg)
++ CMA-MAP-Elites from [Covariance Matrix Adaptation for the Rapid Illumination of Behavior Space](https://dl.acm.org/doi/pdf/10.1145/3377930.3390232?casa_token=84WaWgtEOHwAAAAA:J01FdWPGmWq0Y5iwTIo1QB6nL41JHyNjlPFpZ3f4AwZMGlHVbjJDdFjZAxT_Bfft6IPB3vupERM-9w)
++ Deep-grid-MAP-Elites introduced in [Fast and stable MAP-Elites in noisy domains using deep grids](https://watermark.silverchair.com/isal_a_00316.pdf?token=AQECAHi208BE49Ooan9kkhW_Ercy7Dm3ZL_9Cf3qfKAc485ysgAAAsswggLHBgkqhkiG9w0BBwagggK4MIICtAIBADCCAq0GCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM3iP7kURpUbDa-XAbAgEQgIICfigb4OIm1zO3sLG0EY96SXx3pQblCAEC2gDQryW9XMLErwaDHaAojOW8PuO3iB4bugnXxTpXS7uCobvKSYBzYPOnF7PEUYwpGiVNpjiRCi6LXOIOtVhbrMdHuwz7zlLKwA_wTH_3QyDN8nuUn3xLLxeM9dTwdehi7Rg3iX83WkI3PS4CR6SeRLwpSn-_nJLz_l2mP8hPlaKJcaGSN7R_ZfRhEg_w64wUHKEG9AuvtZkf7YYMr7c-dmR29TXRSBJw5iUOrYBZkSI1yry1I5MHZVdy9qYJTNqxl3rV7Do__e2RS6mYEEvOSb1UG1OJMjrvsQ50yAOGC7cjk_J91zwXa27KvFU2nRAG6KZ38W1uq3gghRzMmo1wHPBArIaVmN1firRhACJJxKqrdn_yg4xT2eH6FkmG9RIXfba2B5dw2LgsHQ7HwzZoETZ-JFFUdafp5GQHduWfJ2dDCZ7avUIMCR34ELArLISmoL5i-Ygb-Hshkax1qIKZoIiK9tFBpWY7e1P5p07PZoubdpFLbhqZ-OkFd9Jv4kazbCEk0yGZVZhN38xGeJUoSH_VdFVOWeJGN18y-EZOp9DYlOJgbcxtc6PUUJ-cCAHkggIz_H1SG3OHrtTxSvuWNWJqOB4XA8K9sQhEgj_R1ij1jbezSUCbd2PhFeWvbDC2QqwBukWd-aabwDydXaZTucDAoq13bDOtaB6kxmbmetugTyzRwg-WaPVeAUPnq8KHmZpUlzABzPlFk3UgBhdqgmd-g2mnxu6XtNIixbdSX9Fd4fc-GuCq6VsWuYSxQ7ZKCdL1eyljBjE3FCbnAFZ-XYX2Ol8Q2QMDP6chEyvovFVQ1xchF9rs)
++ MAP-Elites-sampling as used in previous works such as [Hierarchical Behavioral Repertoires with Unsupervised Descriptors](https://dl.acm.org/doi/pdf/10.1145/3205455.3205571?casa_token=n8XprBI79jcAAAAA:IwwUqHH9dNCZc9GgbPFc2Xp8Ox5O4CeRoG7J0Xb_YpiyPR57NrlAhNmH1b9kqESzi85IIPaqEMZVpA)
+It allows to compare these approaches on the [QDgym_extended tasks](https://github.com/adaptive-intelligent-robotics/QDgym_extended) based on the [QDgym tasks](https://github.com/ollenilsson19/QDgym).
+It is based on the original repository of [PGA-MAP-Elites](https://github.com/ollenilsson19/PGA-MAP-Elites), that merged the original repository of [TD3](https://github.com/sfujim/TD3) with the [PyMAP-Elites](https://github.com/resibots/pymap_elites) implementation of MAP-Elites.
+
+
+# Libraries and dependencies
+
+The implementation of all tasks and algorithms is done in Python, it requires the standard Python libraries as well as [Numpy](https://numpy.org/).
+All the tasks used in the experiments are implemented in the [QDgym_extended library](https://github.com/adaptive-intelligent-robotics/QDgym_extended) based on the [QDgym library](https://github.com/ollenilsson19/QDgym) introduced in [Policy Gradient Assisted MAP-Elites](https://dl.acm.org/doi/pdf/10.1145/3449639.3459304?casa_token=6iKdMjVJXLoAAAAA:lzuKlS8Gm_-g_AFIBYFA_g790NVOX6Y615n9SoG5zGG9fHQH7xf0RSKE__5a3qsOSswKRM1cErTymg). They rely on [Gym](https://gym.openai.com/) and [Pybullet](https://pybullet.org/wordpress/).
+The algorithms requires [Scikit-learn](https://pypi.org/project/scikit-learn/) for the implementation of the CVT archives, and CMA-MAP-Elites is based on the implementation in [PyRibs](https://pyribs.org/) developed by its authors. 
+All algorithms are used to learn Deep Neural Network controllers requiring the [PyTorch](https://pytorch.org/) lirabry.
+Furthermore, the analysis of the results is based on [Panda](https://pandas.pydata.org/), [Matplotlib](https://matplotlib.org/) and [Seaborn](https://seaborn.pydata.org/index.html) libraries.
+We also propose a containerised version of our environment to replicate our experiment and results in [Singularity](https://singularity-docs.readthedocs.io).
+
+
+# Structure
+
+The main part of the code contains the following files and folders:
++ `run_experiment.py` is the main file, used to run any experiments.
++ `run_plots.py` allows to analyse the results of a run and generate the corresponding graphs.
++ `configure_experiment` contains one config files to run each algorithm in this repository with its default parameters.
++ `CVT` saves the CVT archives to avoid recomputing them at each run.
++ `mapgames` contains the main structure of all algorithms based on the structure of [PyMAP-Elites](https://github.com/resibots/pymap_elites). 
+	+ `initialisation.py` is called first to initialise the chosen algortihm.
+	+ `mapelites.py` runs the main loop of the algorithm.
+	+ `mapping` contains all the classes and functions needed to handle the main component of MAP-Elites: the archive.
+	+ `learning` contains all the classes for Deep Neural Networks objects: the controllers for all algorithms and the critics and replya buffer for Deep Reinforcement Learning approaches.
+	+ `process` defines the processes parallel to the main loop: the critic training and the parallelisation of the evaluations.
+	+ `variation` allows to define the MAP-Elites mutations and the policy-gradient mutations.
+	+ `metrics` contains the definition of all metrics used in the paper.
+	+ `analysis` allows to analyse a finalised run.
++ `singularity` folder contains all files needed to compile the Singularity container for this experiment.
+
+
+# Execution
+
+## Run
+
+The results from the experiments can be reproduce by running `run_experiment.py`. 
+This script takes a range of arguments which is easiest to pass as a .txt by using the `--config_file` argument. You can find the config files for all algorithms in the `configure_experiment` folder. For example to run PGA-MAP-Elites with the parameters from the paper:
 
 ```shell script
-git clone --recurse-submodules git@gitlab.doc.ic.ac.uk:AIRL/research_projects/manon_flageat/pg-map-elites.git
-```
-
-#### Running in Sandbox
-
-First build the sandbox image by:
-
-```shell script
-cd pg-map-elites/singularity
-./start_container.sh
-```
-This will build an image that containes all the correct dependencies to run the code. Too see the dependencies you can inspect the `singularity.def` file located in `pg-map-elites/singularity`.
-
-
-When inside the sandbox container the code can be run by:
-
-```shell script
-cd /git/sferes2/exp/pg-map-elites
-python3 run_experiment.py
-```
-`run_experiment.py` takes a range of arguments which is easiest to pass as a .txt by using the `--config_file` argument. You can find the config files for all algorithms in the `configure_experiment` folder.
-The files ending with `config_local` are meant to be used on local computer to test the code, the one ending with `config` are meant to be used on the HPC. For example:
-
-```shell script
-cd /git/sferes2/exp/pg-map-elites
-python3 run_experiment.py --config_file configure_experiment/pga_config_local.txt
+python3 run_experiment.py --config_file configure_experiment/pga_config.txt
 ```
 
 These config files do not define the experiment you want to run, by default it runs the QDAntBulletEnv-v0 environment, to change it to QDWalker2DBulletEnv-v0 for example, you can run:
 
 ```shell script
-cd /git/sferes2/exp/pg-map-elites
 python3 run_experiment.py --config_file configure_experiment/pga_config_local.txt --env QDWalker2DBulletEnv-v0
 ```
 
 You can find the list of possible environments, and more details about the arguments passed by the config files in `run_experiment.py`.
 
-#### Analysis
+## Analysis
 
-The output of the code will be saved in the location specified by the `--save_path` argument. 
+The output of the code will be saved in the location specified by the `--save_path` argument.
 It contains stats file that can be analysed and plotted using `run_plots.py`. To execute it, use:
 
 ```shell script
 python3 run_plots.py --save_path [path_to_stats_files] --results_path [path_to_save_graphs] --max_evals [max_evals_of_run] --progress --archive
 ```
 
-The `--max_evals` input allow to select which archive should be plotted as the final archive. If there is no archive corresponding to this value, no archive plots will be displayed. 
+The `--max_evals` input allow to select which archive should be plotted as the final archive. If there is no archive corresponding to this value, no archive plots will be displayed.
 The `--progress` input chose to plot the progress graphs and `--archive` to plot the final archives, you may want to have a look at the other possible analysis listed in `run_plots.py`.
 
-#### Visualisation
 
-You can also visualise the agent in the PyBullet environment by running `run_visualisation.py`:
+# Execution from the final Singularity container image
 
-```shell script
-python3 run_visualisation.py --save_path [path_to_stats_files] --results_path [path_to_save_videos]
-```
+The results of the paper can be reproduced by running the Singularity container image of the experiment. 
+Executing the container image directly with the following command: `./*image_name*` will re-generate the results for PGA-MAP-Elites on the QDAnt task with the parameters from the paper.
+Other parameters can be specified as followed: `./*image_name* *additional_parameters*`, these parameters can be alternative algortihms or enviroments.
+Unless otherwise specified, the results of the execution are solved in a `results_pga-map-elites` folder, outside of the image, at the same location.
 
-#### Running Final Images
+An additional app named Analysis allow to run the analysis of a given folder only. 
+It can be run with the following command: `singularity run --app Analysis *image_name* *results_folder_name* *additional_analysis_parameters*`
 
-First build the final image by:
-
-```shell script
-cd singularity
-./build_final_image.sh
-```
-This will build an image named `final_pg-map-elites_$(date +%Y-%m-%d_%H_%M_%S).sif` that containes all the correct dependencies to run the code.
-
-Running this final container will automatically run the current `run_experiment.py`, followed by the current `run_plots.py`. You can specify additional parameters for `run_experiment.py` by adding them at the end as follow:
-You can run the final container with the following command:
-
-```shell script
-./final_pg-map-elites_$(date +%Y-%m-%d_%H_%M_%S).sif [other_arguments_you_may_have]
-```
-
-All outputs of this run will be saved in a folder `results_pg_map_elites`. Each run will create its own new subfolder: `results_pg_map_elites/%Y-%m-%d_%H_%M_%S`. The analysis script will consider the full content of `results_pg_map_elites`.
-
-
-#### Running on HPC
-
-When running on the HPC, make sure to add the following lines in your job script to constrain the number of thread used by PyTorch (the evaluations and PG mutation are already spreading the cores through the multiprocessing library):
-
-```shell script
-export KMP_SETTING="KMP_AFFINITY=granularity=fine,compact,1,0"
-export KMP_BLOCKTIME=1
-export OMP_NUM_THREADS=1
-export MKL_NUM_THREADS=1
-```
-
-If you use the gitlab notebook, use the the `no_containall` branch which already contains these lines.
-
+This container can be recompile using the files in the singularity folder: `start_container` to build a sandbox container and `build_final_image` to build the final container image.
