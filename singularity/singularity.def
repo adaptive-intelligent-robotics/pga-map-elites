@@ -29,10 +29,9 @@ From: airl_lab/default/airl_env:bare_ci
    git clone https://gitlab.doc.ic.ac.uk/AIRL/research_projects/manon_flageat/pga-map-elites-telo.git ./pga-map-elites-telo
 
 %runscript
-    cd /workspace/pga-map-elites-telo
-
     # Create result folder
     CURPATH=$(pwd)
+    cd /workspace/pga-map-elites-telo
     DIRNAME=results_pga-map-elites
     mkdir -p $CURPATH/$DIRNAME/
     PATHNAME=$(date +%Y-%m-%d_%H_%M_%S)_$$
