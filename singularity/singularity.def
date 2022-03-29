@@ -26,7 +26,7 @@ From: airl_lab/default/airl_env:bare_ci
    exit 0 #NOTFORFINAL - the lines below this "exit" will be executed only when building the final image
    #====================================================================================================
 
-   git clone https://github.com/adaptive-intelligent-robotics/pga-map-elites.git ./pga-map-elites
+   #CLONEHERE
 
 %runscript
     # Create result folder
