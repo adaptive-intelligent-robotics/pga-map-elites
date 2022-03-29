@@ -12,7 +12,6 @@ From: airl_lab/default/airl_env:bare_ci
    cd /workspace
 
    apt-get update
-   apt-get upgrade -y
    DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip python-git
    rm -rf /var/lib/apt/lists/*
    
