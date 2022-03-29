@@ -1,7 +1,7 @@
 
-# Benefits of policy-gradient in PGA-MAP-Elites
+# Empirical analysis of PGA-MAP-Elites for Neuroevolution in Stochastic Domains
 
-This repository contains the code associated with [Benefits of policy-gradient in PGA-MAP-Elites](https://www.imperial.ac.uk/adaptive-intelligent-robotics).
+This repository contains the code associated with [Empirical analysis of PGA-MAP-Elites for Neuroevolution in Stochastic Domains](https://www.imperial.ac.uk/adaptive-intelligent-robotics).
 
 This code proposes an implementation of several algorithms: 
 + MAP-Elites algorithm from [Illuminating search spaces by mapping elites](https://arxiv.org/pdf/1504.04909.pdf).
