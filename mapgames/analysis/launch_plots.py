@@ -84,25 +84,6 @@ def launch_plots(exp_path,
 					     )
     	print("\nPlotted all progress graphs.\n")
 
-    	print("Reading and printing CMA-ME graphs.")
-    	# Plot variation plots for PGA-only
-    	cma_me_variants = data[data["Algorithm"].str.contains("CMA-ME")]["Algorithm"].drop_duplicates().values
-    	for cma_me_variant in cma_me_variants:
-    		data = plot_progresses.plot_progress(data_path=exp_path, 
-    					 	     save_path=save_path, 
-    						     case_name=str(max_evals) + "_" + \
-						     	       cma_me_variant.replace(" ", "_"), 
-						     hue="Emitter",
-					     	     variant_names=[cma_me_variant],
-					     	     environment_names=env_names,
-					             batch_size=batch_size, 
-					             stat_period=stat_period,
-					     	     filename="cma_me",
-					     	     p_values = p_values,
-					     	     verbose=verbose
-					     	    )
-    	print("\nPlotted all variation graphs.\n")
-
     	if variation:
     	    print("Reading and printing variation graphs.")
 
