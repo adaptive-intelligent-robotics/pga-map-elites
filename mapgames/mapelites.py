@@ -37,16 +37,12 @@ def map_elites(
     random_init,
     init_batch_size,
     eval_batch_size,
-    train_batch_size,
     nr_of_steps_act,
-    discard_dead,
     save_stat_period,
     save_archive_period,
     nb_reeval,
     archive_filename,
     save_path,
-    exclude_greedy_actor,
-    best_greedy_actor,
 ):
     """
     Algorithm main loop.
@@ -72,16 +68,12 @@ def map_elites(
             - random_init {int} - Nr of init evaluations
             - init_batch_size {int} -  Nr individuals per init generation
             - eval_batch_size {int} - Nr individuals per generation
-            - train_batch_size {int} - Batch size for both actor and critic
             - nr_of_steps_act {int} - Nr of training steps for local search
-            - discard_dead {bool} - do not keep solutions that do not last all simu
             - save_stat_period {int} - period to save metrics
             - save_archive_period {int} - period to save archive
             - nb_reeval {int} - Nb evals used for better estimation of fitness/bd
             - archive_filename {str} - filename prefixe to save archives
             - save_path {str} - path to save archives
-            - exclude_greedy_actor {bool} - Do not consider critic's actor for addition
-            - best_greedy_actor {bool} - Update critic's greedy actor with archive
     Outputs:
             - archive {dict}
             - greedy_indiv {Individual}
@@ -147,8 +139,6 @@ def map_elites(
                 critic, actors, states = None, [], None
 
             # Add to offsprings
-            if exclude_greedy_actor:
-                actors = []
             to_evaluate = copy.deepcopy(actors)
             variation_types = ["greedy" for _ in range(len(actors))]
 
@@ -227,39 +217,25 @@ def map_elites(
 
             fitness, descriptor, alive, time = evaluation
 
-            # If need to be added
-            if alive or not (discard_dead):
+            # Initialise individual
+            s = Individual(to_evaluate[idx], descriptor, fitness)
 
-                # Initialise individual
-                s = Individual(to_evaluate[idx], descriptor, fitness)
+            # Add to archive
+            added_main = add_to_archive(s, s.desc, archive, kdt, cell_fn)
 
-                # Add to archive
-                added_main = add_to_archive(s, s.desc, archive, kdt, cell_fn)
-
-                # Update metrics
-                all_variation_metrics.update(
+            # Update metrics
+            all_variation_metrics.update(
                     n_evals,
                     variation_types[idx],
                     int(added_main),
                     int(s.x.novel),
                 )
 
-                # Update greedy actor if relevant
-                if greedy_indiv is None:
+            # Update greedy actor if relevant
+            if greedy_indiv is None:
                     greedy_indiv = s
-                elif best_greedy_actor and greedy_indiv.fitness < s.fitness:
+            elif actors != [] and idx == len(actors) - 1:
                     greedy_indiv = s
-                    send_greedy = True
-                elif (
-                    not (best_greedy_actor) and actors != [] and idx == len(actors) - 1
-                ):
-                    greedy_indiv = s
-
-            # If no need to be added, still update variation metrics
-            else:
-                all_variation_metrics.update(
-                    n_evals, variation_types[idx], 0, 0
-                )
 
         # Update greedy actor
         if critic_proc is not None and send_greedy:

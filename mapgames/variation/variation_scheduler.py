@@ -23,33 +23,12 @@ class VariationScheduler:
         self,
         selection_op,
         proportion_evo=0.5,
-        stop_pg=10000000,
-        proportion_update=1.0,
-        proportion_update_period=10000000,
-        lr_update=1.0,
-        lr_update_period=10000000,
-        nr_of_steps_act_update=1.0,
-        nr_of_steps_act_update_period=10000000,
-        mutation_rate_update=1.0,
-        mutation_rate_update_period=10000000,
     ):
         """
         Initialise the scheduler.
         Input:
             - selection_op {ArchiveSelector} - selector used for crossover
             - proportion_evo {float} - proportion of pg and ga variations
-            - stop_pg {int} - nr evaluations to stop pg variation (GA/PG)
-            - proportion_update {float} - proportion_evo decay (GA/PG)
-            - proportion_update_period {float} - proportion_evo decay
-                period (GA/PG)
-            - lr_update {float} - lr decay (PG)
-            - lr_update_period {float} - lr decay period (PG)
-            - nr_of_steps_act_update {float} - nr_of_steps_act decay (PG)
-            - nr_of_steps_act_update_period {float} - nr_of_steps_act decay
-                period (PG)
-            - mutation_rate_update {float} - mutation_rate decay (GA)
-            - mutation_rate_update_period {float} - mutation_rate decay
-                period (GA)
         Output: /
         """
         self.ga_variation = None
@@ -57,25 +36,6 @@ class VariationScheduler:
 
         self.selection_op = selection_op
         self.proportion_evo = proportion_evo
-
-        # Proportion evo update
-        self.stop_pg = stop_pg
-        self.proportion_update = proportion_update
-        self.proportion_update_period = proportion_update_period
-        self.proportion_update_evals = 0
-
-        # PG update
-        self.lr_update = lr_update
-        self.lr_update_period = lr_update_period
-        self.lr_update_evals = 0
-        self.nr_of_steps_act_update = nr_of_steps_act_update
-        self.nr_of_steps_act_update_period = nr_of_steps_act_update_period
-        self.nr_of_steps_act_update_evals = 0
-
-        # GA update
-        self.mutation_rate_update = mutation_rate_update
-        self.mutation_rate_update_period = mutation_rate_update_period
-        self.mutation_rate_update_evals = 0
 
     def initialise_variations(
         self,
@@ -85,13 +45,11 @@ class VariationScheduler:
         num_cpu=False,
         lr=3e-4,
         nr_of_steps_act=50,
-        max_gene=False,
-        min_gene=False,
         mutation_rate=0.05,
         crossover_rate=0.75,
         eta_m=5.0,
         eta_c=10.0,
-        sigma=0.1,
+        sigma=0.2,
         max_uniform=0.1,
         iso_sigma=0.005,
         line_sigma=0.05,
@@ -105,8 +63,6 @@ class VariationScheduler:
             - num_cpu {int} - number of cpu (PG)
             - lr {float} - learning rate for actor learning (PG)
             - nr_of_steps_act {int} - number of steps for actor learning (PG)
-            - max_gene {float} - max value for the genotype (GA)
-            - min_gene {float} - min value for the genotype (GA)
             - mutation_rate {float} - probability of mutation (GA)
             - crossover_rate {float} - probability of crossover (GA)
             - eta_m {float} - amplitude of polynomial mutation (GA)
@@ -119,6 +75,8 @@ class VariationScheduler:
         """
 
         # GA variation
+        min_gene = False 
+        max_gene = False
         if crossover_op == "iso_dd":
             crossover_operator = IsoDDCrossover(
                 min_gene, max_gene, iso_sigma, line_sigma
@@ -156,72 +114,11 @@ class VariationScheduler:
 
     def update(self, n_evals):
         """
-        Update the mutations.
+        Update the mutations. Not used here.
         Input: n_evals {int} - curent number of eval
         Output: {bool} - true if the mutations have been modified
         """
-        print("\nEntering variation update")
-
-        modified = False
-
-        # First update proportion evo
-        if n_evals >= self.stop_pg and self.proportion_evo != 1.0:
-            self.proportion_evo = 1.0
-            modified = True
-            print(" -> Stoped PG")
-        elif (
-            n_evals < self.stop_pg
-            and self.proportion_update != 1
-            and (n_evals - self.proportion_update_evals)
-            >= self.proportion_update_period
-        ):
-            self.proportion_evo = self.proportion_evo * self.proportion_update
-            self.proportion_update_evals = n_evals
-            modified = True
-            print(" -> Reducing proportion of PG:", self.proportion_evo)
-
-        # Second update the PG variation
-        if self.pg_variation is not None:
-            if (
-                self.lr_update != 1
-                and (n_evals - self.lr_update_evals) >= self.lr_update_period
-            ):
-                self.pg_variation.update_lr(self.lr_update)
-                self.lr_update_evals = n_evals
-                modified = True
-                print(" -> Reducing lr:", self.pg_variation.lr)
-            if (
-                self.nr_of_steps_act_update != 1
-                and (n_evals - self.nr_of_steps_act_update_evals)
-                >= self.nr_of_steps_act_update_period
-            ):
-                self.pg_variation.update_nr_of_steps_act(self.nr_of_steps_act_update)
-                self.nr_of_steps_act_update_evals = n_evals
-                modified = True
-                print(
-                    " -> Reducing nr_of_steps_act:", self.pg_variation.nr_of_steps_act
-                )
-
-        # Second update the GA variation
-        if self.ga_variation is not None:
-            if (
-                self.mutation_rate_update != 1
-                and (n_evals - self.mutation_rate_update_evals)
-                >= self.mutation_rate_update_period
-            ):
-                modified_ga = self.ga_variation.update_mutation_rate(
-                    self.mutation_rate_update
-                )
-                self.mutation_rate_update_evals = n_evals
-                if modified_ga:
-                    modified = True
-                    print(
-                        " -> Reducing mutation_rate:",
-                        self.ga_variation.mutation.mutation_rate,
-                    )
-
-        print("Exiting variation update\n")
-        return modified
+        return False
 
     def evolve(self, archive, nb_controllers, critic=False, states=False):
         """

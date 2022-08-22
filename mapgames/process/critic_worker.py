@@ -10,12 +10,12 @@ def critic_worker(
     critic_fn,
     nr_of_steps_crit,
     nr_of_steps_act,
-    train_batch_size,
     random_init,
     transitions_queue,
     remote,
     global_sync,
     close_process,
+    train_batch_size=256,
 ):
 
     """
@@ -25,12 +25,12 @@ def critic_worker(
         - critic_fn {partial Critic} - function that initialises the critic
         - nr_of_steps_crit {int} - nr of steps to train critic per generation
         - nr_of_steps_act {int} - nr of steps to train actor per generation
-        - train_batch_size {int} - batch size for training critic
         - random_init {int} - number of init steps
         - transitions_queue {Queue} - queue to receive transitions
         - remote {Pipe} - pipe to receive greedy actor
         - global_sync {Event} - event to trigger synch
         - close_process {Event}
+        - train_batch_size {int} - batch size for training critic
     """
 
     # initialisation - .x() is to extract from CloudpickleWrapper
@@ -110,12 +110,12 @@ def td3_critic_worker(
     critic_fn,
     actor_fn,
     env_fn,
-    train_batch_size,
     random_init,
     num_cpu,
     remote,
     global_sync,
     close_process,
+    train_batch_size=256,
 ):
 
     """
@@ -125,12 +125,12 @@ def td3_critic_worker(
         - critic_fn {partial Critic} - function that initialises the critc
         - actor_fn {partial Actor} - function that initialises the actor
         - env_fn {Partial Env}
-        - train_batch_size {int} - batch size for training critic
         - random_init {int} - number of init steps
         - num_cpu {int} - number of parallel envs used to regulate Pipe exchanges
         - remote {Pipe} - pipe to receive greedy actor
         - global_sync {Event} - event to trigger synch
         - close_process {Event}
+        - train_batch_size {int} - batch size for training critic
     """
 
     # initialisation - .x() is to extract from CloudpickleWrapper

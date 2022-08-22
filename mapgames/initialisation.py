@@ -112,8 +112,8 @@ def init_factory(args):
         action_dim,
         max_action,
         args.neurons_list,
-        normalise=args.normalise,
-        affine=args.affine,
+        normalise=False,
+        affine=False,
     )
     dim_gen = get_dim_gen(actor_fn())
 
@@ -134,12 +134,12 @@ def init_factory(args):
             state_dim,
             action_dim,
             max_action,
-            discount=args.discount,
-            tau=args.tau,
-            expl_noise=args.expl_noise,
-            policy_noise=args.policy_noise * max_action,
-            noise_clip=args.noise_clip * max_action,
-            policy_freq=args.policy_freq,
+            discount=0.99,
+            tau=0.005,
+            expl_noise=0.2,
+            policy_noise=0.2 * max_action,
+            noise_clip=0.5 * max_action,
+            policy_freq=2,
             lr=args.lr_crit,
         )
         # For TD3 the worker run the main algorithm in the background
@@ -150,7 +150,6 @@ def init_factory(args):
                 CloudpickleWrapper(critic_fn),
                 actor_fn,
                 td3_env,
-                args.train_batch_size,
                 args.random_init,
                 args.num_cpu,
             )
@@ -164,7 +163,6 @@ def init_factory(args):
                 CloudpickleWrapper(critic_fn),
                 args.nr_of_steps_crit,
                 args.nr_of_steps_act,
-                args.train_batch_size,
                 args.random_init,
                 envs.transitions_queue,
             )
@@ -173,21 +171,11 @@ def init_factory(args):
 
     ##########################
     # Set selection operator #
-    selection_op = ArchiveSelector(args.selector)
+    selection_op = ArchiveSelector("uniform")
 
     ##################
     # Set variations #
-    variations_scheduler = VariationScheduler(
-        selection_op,
-        args.proportion_evo,
-        stop_pg=args.stop_pg,
-        proportion_update=args.proportion_update,
-        proportion_update_period=args.proportion_update_period,
-        lr_update=args.lr_update,
-        lr_update_period=args.lr_update_period,
-        nr_of_steps_act_update=args.nr_of_steps_act_update,
-        nr_of_steps_act_update_period=args.nr_of_steps_act_update_period,
-    )
+    variations_scheduler = VariationScheduler(selection_op, args.proportion_evo)
     use_ga_variation = not (args.algo in ["TD3", "CMA-ME"])
     use_pg_variation = (args.algo == "PGA-MAP-Elites") and (
         args.proportion_evo < 1 or args.proportion_update < 1
@@ -199,16 +187,6 @@ def init_factory(args):
         num_cpu=args.num_cpu_var,
         lr=args.lr_act,
         nr_of_steps_act=args.nr_of_steps_act,
-        max_gene=args.max_genotype,
-        min_gene=args.min_genotype,
-        mutation_rate=args.mutation_rate,
-        crossover_rate=args.crossover_rate,
-        eta_m=args.eta_m,
-        eta_c=args.eta_c,
-        sigma=args.sigma,
-        max_uniform=args.max_uniform,
-        iso_sigma=args.iso_sigma,
-        line_sigma=args.line_sigma,
     )
 
     ###############
@@ -228,7 +206,7 @@ def init_factory(args):
     # Set archive #
 
     # KDTree for cvt archives
-    c = cvt(args.n_niches, dim_map, args.cvt_samples, not (args.no_cached_cvt))
+    c = cvt(args.n_niches, dim_map, 100000, True)
     kdt = KDTree(c, leaf_size=30, metric="euclidean")  # k-nn for achive addition
 
     # CMA-ME uses PyRibs archive
@@ -236,7 +214,7 @@ def init_factory(args):
         archive = CVTArchive(
             args.n_niches,
             [(0, 1) for _ in range(dim_map)],
-            samples=args.cvt_samples,
+            samples=100000,
             custom_centroids=c,
         )
 
