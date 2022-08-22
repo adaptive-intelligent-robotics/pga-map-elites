@@ -102,9 +102,6 @@ class Critic(object):
             a = copy.deepcopy(new_actor)
             for param in a.parameters():
                 param.requires_grad = True
-            a.parent_1_id = new_actor.id
-            a.parent_2_id = None
-            a.type = "critic_training"
 
             self.actor = a
             self.actor_target = copy.deepcopy(a)

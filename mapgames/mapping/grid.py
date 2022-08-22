@@ -45,8 +45,6 @@ def add_to_archive(s, descriptor, archive, kdt, cell_fn, reeval=False):
     if n in archive:
         # Try to add to cell
         if archive[n].can_add(s):
-            if not reeval:
-                s.x.delta_f = s.fitness - archive[n].fitness
             added = archive[n].add(s)
             assert added == 1, "Mismatch between can_add and add in Cell class"
             return 1
@@ -60,9 +58,6 @@ def add_to_archive(s, descriptor, archive, kdt, cell_fn, reeval=False):
         if archive[n].can_add(s):
             if not reeval:
                 s.x.novel = True
-                s.x.delta_f = (
-                    s.fitness
-                )  # maybe we should beware the cases where the fitness can be negative
             added = archive[n].add(s)
             assert added == 1, "Mismatch between can_add and add in Cell class"
             return 1

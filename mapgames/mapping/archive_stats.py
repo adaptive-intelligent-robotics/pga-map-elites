@@ -53,17 +53,13 @@ def save_archive(
 
 def save_actor(s, n_evals, actors_file):
     actors_file.write(
-        "{} {} {} {} {} {} {} {} {} {}\n".format(
+        "{} {} {} {} {} {}\n".format(
             n_evals,
             s.x.id,
             s.fitness,
             str(s.desc).strip("[]"),
             str(s.centroid).strip("()"),
-            s.x.parent_1_id,
-            s.x.parent_2_id,
-            s.x.type,
             s.x.novel,
-            s.x.delta_f,
         )
     )
     actors_file.flush()

@@ -242,9 +242,6 @@ def map_elites(
                     variation_types[idx],
                     int(added_main),
                     int(s.x.novel),
-                    float(s.x.delta_f),
-                    float(s.parent_delta_f),
-                    float(s.parent_delta_bd),
                 )
 
                 # Update greedy actor if relevant
@@ -261,7 +258,7 @@ def map_elites(
             # If no need to be added, still update variation metrics
             else:
                 all_variation_metrics.update(
-                    n_evals, variation_types[idx], 0, 0, 0, 0, 0
+                    n_evals, variation_types[idx], 0, 0
                 )
 
         # Update greedy actor

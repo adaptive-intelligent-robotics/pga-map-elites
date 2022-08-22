@@ -63,24 +63,8 @@ class Actor(nn.Module):
 
         self.apply(self.init_weights)
 
-        self.type = None
         self.id = None
-        self.parent_1_id = None
-        self.parent_2_id = None
-
-        self.novel = False  # considered not novel until proven
-
-        # Compare to previous elite in the niche
-        self.delta_f = 0  # set to zero until the niche is filled
-
-        # Compare to parent
-        self.parent_fitness = None
-        self.parent_bd = None
-        self.delta_bd = 0  # zero until measured
-        self.parent_delta_f = 0
-
-        self.behaviour_descriptor = None
-        self.variation_type = None
+        self.novel = False
 
     def forward(self, state):
         if self.num_layers == 1:
