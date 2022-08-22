@@ -14,12 +14,12 @@ From: airl_lab/default/airl_env:bare_42241e39
    apt-get update
    DEBIAN_FRONTEND=noninteractive apt-get install -y python3-git python3-pip
    rm -rf /var/lib/apt/lists/*
-   
+
    pip3 install --upgrade pip
    pip3 install numpy==1.19.5 Cython==0.29.21 GPUtil==1.4.0 psutil==5.9.0
    pip3 install -r requirements.txt
    pip3 install git+https://github.com/adaptive-intelligent-robotics/QDgym_extended.git#egg=QDgym_extended
-   
+
    mkdir -p /workspace/pga-map-elites/
 
    #====================================================================================================
@@ -43,7 +43,7 @@ From: airl_lab/default/airl_env:bare_42241e39
     python3 run_experiment.py --save_path $tmp_dir "$@"
 
     # Analysis
-    python3 run_plots.py --save_path $CURPATH/$DIRNAME --results_path $CURPATH/$DIRNAME --progress --archive 
+    python3 run_plots.py --save_path $CURPATH/$DIRNAME --results_path $CURPATH/$DIRNAME --progress --archive
 
 %apprun Analysis
     cd /workspace/pga-map-elites
@@ -52,4 +52,4 @@ From: airl_lab/default/airl_env:bare_42241e39
     python3 run_plots.py --save_path $PATH_ANALYSIS --results_path $PATH_ANALYSIS --progress --archive "$@"
 
 %help
-    This is the TELO implementation of PGA-MAP-Elites. 
+    This is the TELO implementation of PGA-MAP-Elites.

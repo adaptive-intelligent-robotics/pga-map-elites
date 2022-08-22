@@ -1,10 +1,11 @@
 import copy
-import torch
-from multiprocessing import Process, Queue
 from math import floor
+from multiprocessing import Process, Queue
 
-class PGVariation():
+import torch
 
+
+class PGVariation:
     def __init__(self, num_cpu, lr=1e-3, nr_of_steps_act=10):
         """
         Initialise the PG variation.
@@ -15,7 +16,7 @@ class PGVariation():
         Output: /
         """
 
-        self.label = "pg_" + str(lr) + "_" + str(nr_of_steps_act) 
+        self.label = "pg_" + str(lr) + "_" + str(nr_of_steps_act)
         self.n_processes = num_cpu
         self.lr = lr
         self.nr_of_steps_act = nr_of_steps_act
@@ -25,30 +26,33 @@ class PGVariation():
         self.actors_train_out_queue = Queue()
 
         # Setup paralell processes
-        self.processes = [Process(
+        self.processes = [
+            Process(
                 target=pgvariation_worker,
-                args=(process_id,
-                      self.actors_train_in_queue,
-                      self.actors_train_out_queue
-                     )
-            ) for process_id in range(self.n_processes)]
-        
+                args=(
+                    process_id,
+                    self.actors_train_in_queue,
+                    self.actors_train_out_queue,
+                ),
+            )
+            for process_id in range(self.n_processes)
+        ]
+
         # Start paralell processes
         for p in self.processes:
             p.daemon = True
             p.start()
 
-
-    def update_lr(self, lr_prop = 1.0):
+    def update_lr(self, lr_prop=1.0):
         self.lr = self.lr * lr_prop
-    def update_nr_of_steps_act(self, nr_of_steps_act_prop = 1.0):
+
+    def update_nr_of_steps_act(self, nr_of_steps_act_prop=1.0):
         self.nr_of_steps_act = floor(self.nr_of_steps_act * nr_of_steps_act_prop)
 
     def close(self):
-        """ Close parallel processes. """
+        """Close parallel processes."""
         for p in self.processes:
             p.terminate()
-
 
     def __call__(self, parent_controllers, critic=False, states=False):
         """
@@ -59,39 +63,57 @@ class PGVariation():
             - states {list} - list of states for learning
         Output: offspring_controllers {list} - list of offspring evolved controllers
         """
-        N = len(parent_controllers)
-        offspring_controllers = [None] * N
-        for n in range(N):
-            self.actors_train_in_queue.put((n, copy.deepcopy(parent_controllers[n].x), \
-                                            copy.deepcopy(critic), copy.deepcopy(states.detach()), \
-                                            self.lr, self.nr_of_steps_act))
+        n_parents = len(parent_controllers)
+        offspring_controllers = [None] * n_parents
+        for n in range(n_parents):
+            self.actors_train_in_queue.put(
+                (
+                    n,
+                    copy.deepcopy(parent_controllers[n].x),
+                    copy.deepcopy(critic),
+                    copy.deepcopy(states.detach()),
+                    self.lr,
+                    self.nr_of_steps_act,
+                )
+            )
 
-        for _ in range(N):
+        for _ in range(n_parents):
             n, actor_z = self.actors_train_out_queue.get()
             offspring_controllers[n] = actor_z
 
         return offspring_controllers
 
 
+def pgvariation_worker(
+    process_id,
+    actors_train_in_queue,
+    actors_train_out_queue,
+):
 
-def pgvariation_worker(process_id, actors_train_in_queue, actors_train_out_queue):
-
-    '''
+    """
     Function that runs the parallel processes for the variation operator.
     Input:
         - process_id {int} - ID of the process so it can be identified
         - actors_train_in_queue {Queue object} - queue for incoming actors
         - actors_train_out_queue {Queue object} - queue for outgoing actors
     Output: /
-    '''
+    """
 
     # Start process loop
     while True:
         try:
-            # get an id, a controller to evolve, the critic, states from the replay_buffer and a nb of steps
-            n, actor_x, critic, states, lr, nr_of_steps_act = actors_train_in_queue.get()
+            # get an id, a controller to evolve, the critic,
+            # states from the replay_buffer and a nb of steps
+            (
+                n,
+                actor_x,
+                critic,
+                states,
+                lr,
+                nr_of_steps_act,
+            ) = actors_train_in_queue.get()
 
-            # prepare the new actor 
+            # prepare the new actor
             actor_z = copy.deepcopy(actor_x)
             actor_z.type = "grad"
             actor_z.parent_1_id = actor_x.id
@@ -105,17 +127,13 @@ def pgvariation_worker(process_id, actors_train_in_queue, actors_train_out_queue
             # i guess we're loosing some benefits of adam optimizer, no?
             optimizer = torch.optim.Adam(actor_z.parameters(), lr=lr)
 
-            # get the individual behaviour descriptor
-            ref_bd = actor_z.behaviour_descriptor
-            smoothness = 0.5
-
             # gradient descent loop
             for i in range(nr_of_steps_act):
                 # get a batch of states
                 state = states[i]
 
                 # compute loss
-                actor_loss = - critic.Q1(state, actor_z(state)).mean()
+                actor_loss = -critic.Q1(state, actor_z(state)).mean()
 
                 # update the controller
                 optimizer.zero_grad()

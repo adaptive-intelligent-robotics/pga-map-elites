@@ -1,6 +1,6 @@
-'''
+"""
 Copyright 2019, INRIA
-SBX and ido_dd and polynomilal mutauion variation operators based on pymap_elites framework
+SBX, iso_dd and polynomilal mutation operators based on pymap_elites framework
 https://github.com/resibots/pymap_elites/blob/master/map_elites/
 pymap_elites main contributor(s):
     Jean-Baptiste Mouret, jean-baptiste.mouret@inria.fr
@@ -10,14 +10,16 @@ Modified by:
     Olle Nilsson: olle.nilsson19@imperial.ac.uk
     Felix Chalumeau: felix.chalumeau20@imperial.ac.uk
     Manon Flageat: manon.flageat18@imperial.ac.uk
-'''
+"""
 
 import copy
+
 import numpy as np
 import torch
 
-class Crossover():
-    """ Base Crossover class """
+
+class Crossover:
+    """Base Crossover class"""
 
     def __init__(self, min_gene, max_gene):
         self.min = min_gene
@@ -27,12 +29,14 @@ class Crossover():
         z = copy.deepcopy(controller_x_state_dict)
         for tensor in controller_x_state_dict:
             if "weight" or "bias" in tensor:
-                z[tensor] = self.apply(controller_x_state_dict[tensor], controller_y_state_dict[tensor])
+                z[tensor] = self.apply(
+                    controller_x_state_dict[tensor], controller_y_state_dict[tensor]
+                )
         return z
 
 
 class IsoDDCrossover(Crossover):
-    """ IsoDD Crossover class """
+    """IsoDD Crossover class"""
 
     def __init__(self, min_gene, max_gene, iso_sigma, line_sigma):
         super().__init__(min_gene, max_gene)
@@ -43,12 +47,12 @@ class IsoDDCrossover(Crossover):
         self.line_sigma = line_sigma
 
     def apply(self, x, y):
-        '''
+        """
         Iso+Line
         Ref:
-        Vassiliades V, Mouret JB. Discovering the elite hypervolume by leveraging interspecies correlation.
-        GECCO 2018
-        '''
+        Vassiliades V, Mouret JB. Discovering the elite hypervolume by leveraging
+        interspecies correlation. GECCO 2018
+        """
         a = torch.zeros_like(x).normal_(mean=0, std=self.iso_sigma)
         b = np.random.normal(0, self.line_sigma)
         z = x.clone() + a + b * (y - x)
@@ -60,7 +64,7 @@ class IsoDDCrossover(Crossover):
 
 
 class SBXCrossover(Crossover):
-    """ SBX Crossover class """
+    """SBX Crossover class"""
 
     def __init__(self, min_gene, max_gene, crossover_rate, eta_c):
         super().__init__(min_gene, max_gene)
@@ -77,13 +81,13 @@ class SBXCrossover(Crossover):
             return self.__sbx_bounded(x, y)
 
     def __sbx_unbounded(self, x, y):
-        '''
+        """
         SBX (cf Deb 2001, p 113) Simulated Binary Crossover
         Unbounded version
         A large value ef eta gives a higher probablitity for
         creating a `near-parent' solutions and a small value allows
         distant solutions to be selected as offspring.
-        '''
+        """
         z = x.clone()
         c = torch.rand_like(z)
         index = torch.where(c < self.crossover_rate)
@@ -101,7 +105,11 @@ class SBXCrossover(Crossover):
             x2 = torch.max(x[index[0], index[1]], y[index[0], index[1]])
             z_idx = z[index[0], index[1]]
 
-        beta_q = torch.where(r1 <= 0.5, (2.0 * r1) ** (1.0 / (self.eta_c + 1)), (1.0 / (2.0 * (1.0 - r1))) ** (1.0 / (self.eta_c + 1)))
+        beta_q = torch.where(
+            r1 <= 0.5,
+            (2.0 * r1) ** (1.0 / (self.eta_c + 1)),
+            (1.0 / (2.0 * (1.0 - r1))) ** (1.0 / (self.eta_c + 1)),
+        )
 
         c1 = 0.5 * (x1 + x2 - beta_q * (x2 - x1))
         c2 = 0.5 * (x1 + x2 + beta_q * (x2 - x1))
@@ -114,14 +122,13 @@ class SBXCrossover(Crossover):
             z[index[0], index[1]] = z_mut
         return z
 
-
     def __sbx_bounded(self, x, y):
-        '''
+        """
         SBX (cf Deb 2001, p 113) Simulated Binary Crossover
         A large value ef eta gives a higher probablitity for
         creating a `near-parent' solutions and a small value allows
         distant solutions to be selected as offspring.
-        '''
+        """
         z = x.clone()
         c = torch.rand_like(z)
         index = torch.where(c < self.crossover_rate)
@@ -139,17 +146,24 @@ class SBXCrossover(Crossover):
             x2 = torch.max(x[index[0], index[1]], y[index[0], index[1]])
             z_idx = z[index[0], index[1]]
 
-
         beta = 1.0 + (2.0 * (x1 - self.min) / (x2 - x1))
-        alpha = 2.0 - beta ** - (self.eta_c + 1)
-        beta_q = torch.where(r1 <= (1.0 / alpha), (r1 * alpha) ** (1.0 / (self.eta_c + 1)), (1.0 / (2.0 - r1 * alpha)) ** (1.0 / (self.eta_c + 1)))
+        alpha = 2.0 - beta ** -(self.eta_c + 1)
+        beta_q = torch.where(
+            r1 <= (1.0 / alpha),
+            (r1 * alpha) ** (1.0 / (self.eta_c + 1)),
+            (1.0 / (2.0 - r1 * alpha)) ** (1.0 / (self.eta_c + 1)),
+        )
 
         c1 = 0.5 * (x1 + x2 - beta_q * (x2 - x1))
 
         beta = 1.0 + (2.0 * (self.max - x2) / (x2 - x1))
-        alpha = 2.0 - beta ** - (self.eta_c + 1)
+        alpha = 2.0 - beta ** -(self.eta_c + 1)
 
-        beta_q = torch.where(r1 <= (1.0 / alpha), (r1 * alpha) ** (1.0 / (self.eta_c + 1)), (1.0 / (2.0 - r1 * alpha)) ** (1.0 / (self.eta_c + 1)))
+        beta_q = torch.where(
+            r1 <= (1.0 / alpha),
+            (r1 * alpha) ** (1.0 / (self.eta_c + 1)),
+            (1.0 / (2.0 - r1 * alpha)) ** (1.0 / (self.eta_c + 1)),
+        )
         c2 = 0.5 * (x1 + x2 + beta_q * (x2 - x1))
 
         c1 = torch.clamp(c1, self.min, self.max)

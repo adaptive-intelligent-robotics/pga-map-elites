@@ -1,6 +1,6 @@
-'''
+"""
 Copyright 2019, INRIA
-SBX and ido_dd and polynomilal mutauion variation operators based on pymap_elites framework
+SBX, iso_dd and polynomial mutation operators based on pymap_elites
 https://github.com/resibots/pymap_elites/blob/master/map_elites/
 pymap_elites main contributor(s):
     Jean-Baptiste Mouret, jean-baptiste.mouret@inria.fr
@@ -10,12 +10,12 @@ Modified by:
     Olle Nilsson: olle.nilsson19@imperial.ac.uk
     Felix Chalumeau: felix.chalumeau20@imperial.ac.uk
     Manon Flageat: manon.flageat18@imperial.ac.uk
-'''
+"""
 
 import copy
-import numpy as np
 
-class BasicGAVariation():
+
+class BasicGAVariation:
     """
     A basic GA variation is made of one or zero mutation and one or zero crossover.
     """
@@ -56,12 +56,13 @@ class BasicGAVariation():
             # Apply variation
             if self.crossover:
                 parent_y = self.selection_op(archive, 1)[0]
-                offspring_controllers.append(self.evolve_individual(controller.x, parent_y.x))
+                offspring_controllers.append(
+                    self.evolve_individual(controller.x, parent_y.x)
+                )
             else:
                 offspring_controllers.append(self.evolve_individual(controller.x))
 
         return offspring_controllers
-            
 
     def evolve_individual(self, actor_x, actor_y=False):
         """
@@ -85,7 +86,9 @@ class BasicGAVariation():
                 actor_x.state_dict(), actor_y.state_dict()
             )
             if self.mutation:
-                actor_z_state_dict = self.mutation.apply_to_state_dict(actor_z_state_dict)
+                actor_z_state_dict = self.mutation.apply_to_state_dict(
+                    actor_z_state_dict
+                )
 
         # Elif mutation type
         elif self.mutation:
@@ -97,8 +100,7 @@ class BasicGAVariation():
         return actor_z
 
     def update_mutation_rate(self, mutation_rate_prop):
-        if self.mutation != False:
+        if self.mutation is not False:
             self.mutation.update_mutation_rate(mutation_rate_prop)
             return True
         return False
-

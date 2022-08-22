@@ -1,27 +1,30 @@
 # external imports
-import numpy as np
-from multiprocessing import Process, Queue, Event, Pipe
 import copy
 import time
+from multiprocessing import Event, Pipe, Process, Queue
+
+import numpy as np
 
 # internal imports
-from . import utils
+from mapgames.process.utils import CloudpickleWrapper
+
 
 class ParallelEnv(object):
-    def __init__(self, env_fns, seed, default_eval_mode = False):
+    def __init__(self, env_fns, seed, default_eval_mode=False):
         """
         Initialies envs for parallel evaluations.
-	Input:
-	    - env_fns {make_env} - function to create envs instances
-	    - seed {float} - seed for envs
-	    - default_eval_mode {bool} - do not store the transition for the replay buffer by default
-	Output: /
+        Input:
+            - env_fns {make_env} - function to create envs instances
+            - seed {float} - seed for envs
+            - default_eval_mode {bool} - do not store the transition for the
+              replay buffer by default
+        Output: /
         """
 
         # Create queues
-        self.eval_in_queue = Queue() # Actors to evaluate
-        self.eval_out_queue = Queue() # Actors evaluated
-        self.transitions_queue = Queue() # Transitions (for replay buffer)
+        self.eval_in_queue = Queue()  # Actors to evaluate
+        self.eval_out_queue = Queue()  # Actors evaluated
+        self.transitions_queue = Queue()  # Transitions (for replay buffer)
 
         # connexions: n_processes firsts are for envs - last for critic
         self.n_processes = len(env_fns)
@@ -35,47 +38,56 @@ class ParallelEnv(object):
         self.default_eval_mode = default_eval_mode
 
         # Create the env-related processes
-        self.processes = [Process(
-                target=evaluation_worker, 
+        self.processes = [
+            Process(
+                target=evaluation_worker,
                 args=(
                     process_id,
-                    utils.CloudpickleWrapper(env_fn),
+                    CloudpickleWrapper(env_fn),
                     self.eval_in_queue,
                     self.eval_out_queue,
                     self.transitions_queue,
                     self.close_processes,
                     self.remotes[process_id],
-                    self.seed)
-            ) for process_id, env_fn in enumerate(env_fns)]
+                    self.seed,
+                ),
+            )
+            for process_id, env_fn in enumerate(env_fns)
+        ]
 
         # Start them
         for p in self.processes:
             p.daemon = True
             p.start()
 
-
-
     def eval_policy(self, actors, eval_mode=False):
         """
-        Put actors in the queue for being evaluated by the function evaluation_worker
-        used in the env processes.
-	Inputs:
-            - actors {list of Actor} - actors to evaluate
-	    - eval_mode {bool} - do not store the transition for the replay buffer
-	Ouputs: results {list} - results of evaluation 
+        Put actors in the queue for being evaluated by the function
+        evaluation_worker used in the env processes.
+        Inputs:
+            - actors {list of dict} - actors to evaluate
+            - eval_mode {bool} - do not store the transition for the replay buffer
+        Ouputs: results {list} - results of evaluation
         """
 
         self.steps = 0
-        N = len(actors)
-        results = [None] * N
+        n_actors = len(actors)
+        results = [None] * n_actors
 
         # Put the actors in the queue
         for idx, actor in enumerate(actors):
             self.evaluation_id += 1
-            self.eval_in_queue.put((idx, copy.deepcopy(actor), self.evaluation_id, eval_mode or self.default_eval_mode))
+            self.eval_in_queue.put(
+                (
+                    idx,
+                    copy.deepcopy(actor),
+                    self.evaluation_id,
+                    eval_mode or self.default_eval_mode,
+                )
+            )
 
         # Retrieve the actors from the out queue
-        for _ in range(N):
+        for _ in range(n_actors):
             idx, result = self.eval_out_queue.get()
             fitness, behav_desc, is_alive, nb_steps = result
             for bd in behav_desc:
@@ -88,7 +100,6 @@ class ParallelEnv(object):
         # Retrieve all the results
         return results
 
-
     def close(self):
         """
         Close all the processes.
@@ -98,24 +109,25 @@ class ParallelEnv(object):
         rng_states = []
         for local in self.locals:
             rng_states.append(local.recv())
-        
+
         # Terminate all the processes
         for p in self.processes:
             p.terminate()
         return [x[1] for x in sorted(rng_states, key=lambda element: element[0])]
 
 
+def evaluation_worker(
+    process_id,
+    env_fn_wrapper,
+    eval_in_queue,
+    eval_out_queue,
+    transitions_queue,
+    close_processes,
+    remote,
+    master_seed,
+):
 
-def evaluation_worker(process_id,
-                    env_fn_wrapper,
-                    eval_in_queue,
-                    eval_out_queue,
-                    transitions_queue,
-                    close_processes,
-                    remote,
-                    master_seed):
-    
-    '''
+    """
     Function that runs the paralell processes for the evaluation
     Inputs:
         - process_id {int} - ID of the process so it can be identified
@@ -123,7 +135,7 @@ def evaluation_worker(process_id,
         - eval_in_queue {Queue} - queue for incoming actors
         - eval_out_queue {Queue} - queue for outgoing actors
         - transitions_queue {Queue} - queue for outgoing transitions
-    '''
+    """
 
     # Start environment simulation
     env = env_fn_wrapper.x()
@@ -145,7 +157,7 @@ def evaluation_worker(process_id,
 
                 # Eval loop
                 while not done:
-                    action = actor.select_action(np.array(state)) 
+                    action = actor.select_action(np.array(state))
                     next_state, reward, done, _ = env.step(action)
                     done_bool = float(done) if env.T < env._max_episode_steps else 0
                     # First step
@@ -165,21 +177,28 @@ def evaluation_worker(process_id,
 
                     state = next_state
 
-                # Retrieve data computed by the environment - correspond to the evaluation of the controller
+                # Retrieve data computed by the environment
                 eval_out_queue.put((idx, (env.tot_reward, env.desc, env.alive, env.T)))
 
                 # If not in eval_mode
                 if not eval_mode:
                     # Send all the transitions encountered during the episode
-                    l = len(state_array)
-                    bd_array = np.ones((l, 1)) * env.desc
-                    transitions_queue.put((idx, (state_array, 
-                                                 action_array, 
-						 next_state_array, 
-						 reward_array, 
-						 done_bool_array, 
-						 bd_array)))
-            except:
+                    n_states = len(state_array)
+                    bd_array = np.ones((n_states, 1)) * env.desc
+                    transitions_queue.put(
+                        (
+                            idx,
+                            (
+                                state_array,
+                                action_array,
+                                next_state_array,
+                                reward_array,
+                                done_bool_array,
+                                bd_array,
+                            ),
+                        )
+                    )
+            except BaseException:
                 pass
 
             # If close
@@ -195,7 +214,3 @@ def evaluation_worker(process_id,
         except KeyboardInterrupt:
             env.close()
             break
-
-
-
-
