@@ -1,5 +1,5 @@
 Bootstrap: library
-From: airl_lab/default/airl_env:bare_ci
+From: airl_lab/default/airl_env:bare_42241e39
 
 %labels
     Author manon.flageat18@imperial.ac.uk, felix.chalumeau20@imperial.ac.uk, olle.nilsson19@imperial.ac.uk, a.cully@imperial.ac.uk
@@ -12,10 +12,11 @@ From: airl_lab/default/airl_env:bare_ci
    cd /workspace
 
    apt-get update
-   DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip python-git
+   DEBIAN_FRONTEND=noninteractive apt-get install -y python3-git python3-pip
    rm -rf /var/lib/apt/lists/*
    
    pip3 install --upgrade pip
+   pip3 install numpy==1.19.5 Cython==0.29.21 GPUtil==1.4.0 psutil==5.9.0
    pip3 install -r requirements.txt
    pip3 install git+https://github.com/adaptive-intelligent-robotics/QDgym_extended.git#egg=QDgym_extended
    

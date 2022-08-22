@@ -7,6 +7,4 @@ ribs==0.4.0
 matplotlib==3.3.4
 seaborn==0.11.2
 pandas==1.1.5
-GPUtil==1.4.0
-psutil==5.9.0
 tabulate==0.8.9
