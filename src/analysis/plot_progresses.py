@@ -9,8 +9,8 @@ from matplotlib import pyplot as plt
 from scipy.stats import ranksums
 from seaborn.relational import _LinePlotter
 
-from mapgames.analysis.collect_data import collect_data
-from mapgames.analysis.utils import (
+from src.analysis.collect_data import collect_data
+from src.analysis.utils import (
     adjust_box_widths,
     customize_axis,
     first_second_third_quartile,

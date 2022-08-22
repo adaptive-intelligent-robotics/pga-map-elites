@@ -4,8 +4,8 @@ import argparse
 import gym
 
 # internal import
-from mapgames.analysis.launch_plots import launch_plots
-from mapgames.learning.actor import Actor
+from src.analysis.launch_plots import launch_plots
+from src.learning.actor import Actor
 from run_experiment import ENV_LIST
 
 

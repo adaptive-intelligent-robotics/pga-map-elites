@@ -2,9 +2,9 @@ import os
 
 import matplotlib as mpl
 
-from mapgames.analysis.plot_cartesian_maps import plot_cartesian_map
-from mapgames.analysis.plot_cvt_maps import plot_cvt_map
-from mapgames.analysis.utils import (
+from src.analysis.plot_cartesian_maps import plot_cartesian_map
+from src.analysis.plot_cvt_maps import plot_cvt_map
+from src.analysis.utils import (
     find_cell_files,
     find_centroids,
     get_files,

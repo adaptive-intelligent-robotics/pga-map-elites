@@ -2,9 +2,9 @@ import os
 
 import pandas as pd
 
-from mapgames.analysis.plot_archives import plot_archive
-from mapgames.analysis.plot_progresses import plot_progress
-from mapgames.analysis.plot_visualisations import plot_visualisation
+from src.analysis.plot_archives import plot_archive
+from src.analysis.plot_progresses import plot_progress
+from src.analysis.plot_visualisations import plot_visualisation
 
 pd.set_option("display.max_rows", None)  # Plot full and not partial dataframe
 pd.set_option("display.max_columns", None)

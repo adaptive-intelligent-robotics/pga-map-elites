@@ -16,21 +16,21 @@ from ribs.optimizers import Optimizer
 from sklearn.neighbors import KDTree
 
 # local imports
-from mapgames.analysis.launch_plots import launch_plots  # Double check analysis import
-from mapgames.learning.actor import Actor
-from mapgames.learning.critic import Critic
-from mapgames.learning.replay_buffer import ReplayBuffer
-from mapgames.mapping.archive_selector import ArchiveSelector
-from mapgames.mapping.cell import Cell, DeepGridCell
-from mapgames.mapping.genotype import get_dim_gen
-from mapgames.mapping.grid import cvt
-from mapgames.metrics.progress_metrics import AllProgressMetrics
-from mapgames.metrics.variation_metrics import AllVariationMetrics
-from mapgames.process.critic_process import CriticProcess
-from mapgames.process.critic_worker import critic_worker, td3_critic_worker
-from mapgames.process.utils import CloudpickleWrapper, make_env
-from mapgames.process.vectorized_env import ParallelEnv
-from mapgames.variation.variation_scheduler import VariationScheduler
+from src.analysis.launch_plots import launch_plots  # Double check analysis import
+from src.learning.actor import Actor
+from src.learning.critic import Critic
+from src.learning.replay_buffer import ReplayBuffer
+from src.mapping.archive_selector import ArchiveSelector
+from src.mapping.cell import Cell, DeepGridCell
+from src.mapping.genotype import get_dim_gen
+from src.mapping.grid import cvt
+from src.metrics.progress_metrics import AllProgressMetrics
+from src.metrics.variation_metrics import AllVariationMetrics
+from src.process.critic_process import CriticProcess
+from src.process.critic_worker import critic_worker, td3_critic_worker
+from src.process.utils import CloudpickleWrapper, make_env
+from src.process.vectorized_env import ParallelEnv
+from src.variation.variation_scheduler import VariationScheduler
 
 
 def init_factory(args):

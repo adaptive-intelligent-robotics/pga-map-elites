@@ -7,7 +7,7 @@ import gym
 import numpy as np
 from gym import wrappers
 
-from mapgames.analysis.utils import get_files
+from src.analysis.utils import get_files
 
 
 def plot_visualisation(

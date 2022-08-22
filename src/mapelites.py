@@ -5,14 +5,14 @@ import time as lib_time
 import numpy as np
 
 # local imports
-from mapgames.mapping.archive_stats import (
+from src.mapping.archive_stats import (
     evaluate_archive,
     get_archive_stat,
     save_archive,
 )
-from mapgames.mapping.genotype import genotype_to_actor
-from mapgames.mapping.grid import add_to_archive
-from mapgames.mapping.individual import Individual
+from src.mapping.genotype import genotype_to_actor
+from src.mapping.grid import add_to_archive
+from src.mapping.individual import Individual
 
 
 def map_elites(

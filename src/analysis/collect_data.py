@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from mapgames.analysis.utils import find_min_max, get_files
+from src.analysis.utils import find_min_max, get_files
 
 pd.options.mode.chained_assignment = (
     None  # Disable warning when setting value directly in a dataframe

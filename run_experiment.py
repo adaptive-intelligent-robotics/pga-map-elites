@@ -4,11 +4,11 @@ import multiprocessing
 
 
 # internal import
-from mapgames.initialisation import init_factory
-from mapgames.mapelites import map_elites
-from mapgames.mapping.archive_stats import save_actor, save_actors, save_archive
-from mapgames.mapping.individual import Individual
-from mapgames.process.utils import save
+from src.initialisation import init_factory
+from src.mapelites import map_elites
+from src.mapping.archive_stats import save_actor, save_actors, save_archive
+from src.mapping.individual import Individual
+from src.process.utils import save
 
 ENV_LIST = [
     "QDHalfCheetahBulletEnv-v0",

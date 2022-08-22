@@ -1,11 +1,11 @@
-from mapgames.variation.ga_crossover import IsoDDCrossover, SBXCrossover
-from mapgames.variation.ga_mutation import (
+from src.variation.ga_crossover import IsoDDCrossover, SBXCrossover
+from src.variation.ga_mutation import (
     GaussianMutation,
     PolynomialMutation,
     UniformMutation,
 )
-from mapgames.variation.ga_operator import BasicGAVariation
-from mapgames.variation.pg_operator import PGVariation
+from src.variation.ga_operator import BasicGAVariation
+from src.variation.pg_operator import PGVariation
 
 
 class VariationScheduler:

@@ -6,7 +6,7 @@ from multiprocessing import Event, Pipe, Process, Queue
 import numpy as np
 
 # internal imports
-from mapgames.process.utils import CloudpickleWrapper
+from src.process.utils import CloudpickleWrapper
 
 
 class ParallelEnv(object):

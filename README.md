@@ -32,7 +32,7 @@ The main part of the code contains the following files and folders:
 + `run_plots.py` allows to analyse the results of a run and generate the corresponding graphs.
 + `configure_experiment` contains one config file to run each algorithm in this repository with its default parameters.
 + `CVT` saves the CVT archives to avoid recomputing them at each run.
-+ `mapgames` contains the main structure of all algorithms based on the structure of [PyMAP-Elites](https://github.com/resibots/pymap_elites).
++ `src` contains the main structure of all algorithms based on the structure of [PyMAP-Elites](https://github.com/resibots/pymap_elites).
 	+ `initialisation.py` is called first to initialise the chosen algorithm.
 	+ `mapelites.py` runs the main loop of the algorithm.
 	+ `mapping` contains all the classes and functions needed to handle the main component of MAP-Elites: the archive.
