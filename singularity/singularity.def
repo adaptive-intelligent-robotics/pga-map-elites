@@ -43,13 +43,13 @@ From: airl_lab/default/airl_env:bare_42241e39
     python3 run_experiment.py --save_path $tmp_dir "$@"
 
     # Analysis
-    python3 run_plots.py --save_path $CURPATH/$DIRNAME --results_path $CURPATH/$DIRNAME --progress --archive
+    python3 run_plots.py --save_path $CURPATH/$DIRNAME --results_path $CURPATH/$DIRNAME
 
 %apprun Analysis
     cd /workspace/pga-map-elites
     PATH_ANALYSIS=$1
     shift
-    python3 run_plots.py --save_path $PATH_ANALYSIS --results_path $PATH_ANALYSIS --progress --archive "$@"
+    python3 run_plots.py --save_path $PATH_ANALYSIS --results_path $PATH_ANALYSIS "$@"
 
 %help
     This is the TELO implementation of PGA-MAP-Elites.

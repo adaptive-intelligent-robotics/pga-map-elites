@@ -12,7 +12,7 @@ It proposes an implementation of several algorithms compared within the paper:
 
 This code compares these approaches on the [QDgym_extended tasks](https://github.com/adaptive-intelligent-robotics/QDgym_extended) based on the [QDgym tasks](https://github.com/ollenilsson19/QDgym).
 It is based on the original repository of [PGA-MAP-Elites](https://github.com/ollenilsson19/PGA-MAP-Elites), merging the repository of [TD3](https://github.com/sfujim/TD3) with the [PyMAP-Elites](https://github.com/resibots/pymap_elites) implementation of MAP-Elites.
-We provide an executable precompiled Singularity container [here]().
+We provide an executable precompiled Singularity container [here](https://drive.google.com/file/d/1XsapzTxorN5GVBcd3C2f-yWkn5odhEIv/view?usp=sharing).
 
 
 # Libraries and dependencies
@@ -22,7 +22,7 @@ It requires the standard Python libraries, [Numpy](https://numpy.org/), [Scikit-
 All algorithms learn Deep Neural Network controllers, requiring the [PyTorch](https://pytorch.org/) library, and all the tasks are implemented in the [QDgym_extended library](https://github.com/adaptive-intelligent-robotics/QDgym_extended) that relies on [Gym](https://gym.openai.com/) and [Pybullet](https://pybullet.org/wordpress/).
 Furthermore, the analysis of the results is based on [Panda](https://pandas.pydata.org/), [Matplotlib](https://matplotlib.org/) and [Seaborn](https://seaborn.pydata.org/index.html) libraries.
 
-We also propose a containerised version of our environment to replicate our experiment and results in [Singularity](https://singularity-docs.readthedocs.io). We provide an executable precompiled Singularity container for this repository [here]().
+We also propose a containerised version of our environment to replicate our experiment and results in [Singularity](https://singularity-docs.readthedocs.io). We provide an executable precompiled Singularity container for this repository [here](https://drive.google.com/file/d/1XsapzTxorN5GVBcd3C2f-yWkn5odhEIv/view?usp=sharing).
 
 
 # Structure
@@ -40,7 +40,7 @@ We also propose a containerised version of our environment to replicate our expe
 	+ `variation` allows defining the MAP-Elites mutations and the policy-gradient mutations.
 	+ `metrics` contains the definition of all metrics used in the paper.
 	+ `analysis` defines all the functions needed to analyse the data output by a run.
-+ `singularity` contains all files needed to compile the Singularity container for this experiment. You can find a precompiled container for this repository [here]().
++ `singularity` contains all files needed to compile the Singularity container for this experiment. You can find a precompiled container for this repository [here](https://drive.google.com/file/d/1XsapzTxorN5GVBcd3C2f-yWkn5odhEIv/view?usp=sharing).
 
 
 # Execution from source
@@ -67,7 +67,7 @@ Be careful that the seed is fixed for a given run and needs to be passed as an a
 The output of a run contains `.csv`, `.dat` and `.pickle`  files that can be analysed and plotted using `run_plots.py`. To execute it, use:
 
 ```shell script
-python3 run_plots.py --save_path [path_to_stats_files] --results_path [path_to_save_graphs] --max_evals [max_evals_of_run]
+python3 run_plots.py --save_path *path_to_stats_files* --results_path *path_to_save_graphs* --max_evals *max_evals_of_run*
 ```
 
 `--save_path`specifies where the path to the files output by the run, `--results_path`specifies where to save the resulting graphs and `--max_evals` allows selecting which archive should be plotted as the final archive. If there is no archive corresponding to this value, no archive plots will be displayed.
@@ -80,7 +80,7 @@ Other arguments are listed in `run_plots.py`.
 
 ## Run with an existing container
 
-The results of the paper can be reproduced by running the Singularity container of the experiment, for example, the precompiled container provided [here]().
+The results of the paper can be reproduced by running the Singularity container of the experiment, for example, the precompiled container provided [here](https://drive.google.com/file/d/1XsapzTxorN5GVBcd3C2f-yWkn5odhEIv/view?usp=sharing).
 A container image can be executed directly: `./*image_name*`. This will re-generate the results for PGA-MAP-Elites on the QDWalker task with the parameters from the paper.
 Arguments, as detailed in previous sections, can be specified when executing the container. For example, to run PGA-MAP-Elites for 1000 evaluations on the QDAnt task using the provided image, one can execute the command:
 ```shell script
@@ -101,4 +101,4 @@ singularity run --app Analysis *image_name* *results_folder_name* *additional_an
 The `singularity` folder provides all the building blocks to recompile a new Singularity container:
 + `singularity.def` contains the "recipe" to build the container: it starts from a Ubuntu container, updates a existing libraries and installs the package in `requirements.txt`.
 + `start_container` allows to build a sandbox container, for development. It can be executed with `./start_container`.
-+ `build_final_image` recompiles a final container similar to the one provided [here](). It can be executed with `./build_final_image`.
++ `build_final_image` recompiles a final container similar to the one provided [here](https://drive.google.com/file/d/1XsapzTxorN5GVBcd3C2f-yWkn5odhEIv/view?usp=sharing). It can be executed with `./build_final_image`.
