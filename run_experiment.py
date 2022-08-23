@@ -48,17 +48,17 @@ def read_input():
 
     parser.add_argument("--config_file", type=open, action=LoadFromFile, help="Config file to load args")
     parser.add_argument("--save_path", default="none", type=str, help="Path where to save results")
-    parser.add_argument("--save_stat_period", default=1000, type=int, help="Period to save metrics")
-    parser.add_argument("--save_archive_period", default=10000, type=int, help="Period to save archives")
-    parser.add_argument("--num_cpu", default=48, type=int, help="Nr. of CPUs to use in parallel evaluation")
-    parser.add_argument("--num_cpu_var", default=48, type=int, help="Nr. of CPUs to use in parallel variation")
+    parser.add_argument("--save_stat_period", default=2000, type=int, help="Period to save metrics")
+    parser.add_argument("--save_archive_period", default=50000, type=int, help="Period to save archives")
+    parser.add_argument("--num_cpu", default=4, type=int, help="Nr. of CPUs to use in parallel evaluation")
+    parser.add_argument("--num_cpu_var", default=4, type=int, help="Nr. of CPUs to use in parallel variation")
 
     # Task-related inputs
 
     parser.add_argument("--env", default="QDWalker2DBulletEnv-v0", type=str, help="Env name from " + str(ENV_LIST))
     parser.add_argument("--algo", default="PGA-MAP-Elites", type=str, help="Algo name from " + str(ALGO_LIST))
     parser.add_argument("--seed", default=0, type=int)
-    parser.add_argument("--max_evals", default=1000000, type=int, help="Nr of evaluations")
+    parser.add_argument("--max_evals", default=100000, type=int, help="Nr of evaluations")
     parser.add_argument("--neurons_list", default="128 128", type=str, help="Actor NN: [neurons_list + [action dim]]")
     parser.add_argument("--nb_reeval", default=0, type=int, help="Nb evals used for better estimation of fitness/bd")
 
