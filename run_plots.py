@@ -34,15 +34,10 @@ def read_input():
     parser.add_argument("--max_fitness", default="", type=str, help="Max-fitness for analysis plots (default: none)")
 
     parser.add_argument("--neurons_list", default="128 128", type=str, help="Actor NN: [neurons_list + [action dim]]")
-    parser.add_argument("--normalise", action="store_true", help="Use layer norm")
-    parser.add_argument("--affine", action="store_true", help="Use affine transormation with layer norm")
 
-    parser.add_argument("--archive", action="store_true", help="Plot the archives")
-    parser.add_argument("--progress", action="store_true", help="Plot the progresss graphs")
-    parser.add_argument("--variation", action="store_true", help="Plot the variations graphs")
     parser.add_argument("--visualisation", action="store_true", help="Plot the visualisation graphs")
-
     parser.add_argument("--save_videos", action="store_true", help="Save visualisation videos")
+
     parser.add_argument("--p_values", action="store_true", help="Compute p-values")
 
     args = parser.parse_args()
@@ -57,8 +52,6 @@ def read_input():
 if __name__ == "__main__":
 
     args = read_input()
-    if args.variation and not (args.progress):
-        print("!!!WARNING!!! Cannot plot variaiton without progress")
 
     # Read algos and envs
     algo_list = [] if args.algo == "all" else args.algo.rstrip().split("|")
@@ -79,8 +72,6 @@ if __name__ == "__main__":
             action_dim,
             max_action,
             args.neurons_list,
-            normalise=args.normalise,
-            affine=args.affine,
         )
         env.close()
 
@@ -96,9 +87,9 @@ if __name__ == "__main__":
         save_path=args.results_path,
         min_fit=None if args.min_fitness == "" else float(args.min_fitness),
         max_fit=None if args.max_fitness == "" else float(args.max_fitness),
-        archive=args.archive,
-        progress=args.progress,
-        variation=args.variation,
+        archive=not(args.visualisation),
+        progress=not(args.visualisation),
+        variation=not(args.visualisation),
         visualisation=args.visualisation,
         save_videos=args.save_videos,
         p_values=args.p_values,
