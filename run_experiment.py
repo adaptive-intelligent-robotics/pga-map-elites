@@ -58,7 +58,7 @@ def read_input():
     parser.add_argument("--env", default="QDWalker2DBulletEnv-v0", type=str, help="Env name from " + str(ENV_LIST))
     parser.add_argument("--algo", default="PGA-MAP-Elites", type=str, help="Algo name from " + str(ALGO_LIST))
     parser.add_argument("--seed", default=0, type=int)
-    parser.add_argument("--max_evals", default=100000, type=int, help="Nr of evaluations")
+    parser.add_argument("--max_evals", default=10000, type=int, help="Nr of evaluations")
     parser.add_argument("--neurons_list", default="128 128", type=str, help="Actor NN: [neurons_list + [action dim]]")
     parser.add_argument("--nb_reeval", default=0, type=int, help="Nb evals used for better estimation of fitness/bd")
 
