@@ -93,7 +93,6 @@ def cvt(k, dim, samples, cvt_use_cache=True):
     fname = __centroids_filename(k, dim)
     if cvt_use_cache:
         if Path(fname).is_file():
-            print("\n!!!WARNING!!! using cached CVT:", fname, "\n")
             if dim == 1:
                 if k == 1:
                     return np.expand_dims(
@@ -105,7 +104,7 @@ def cvt(k, dim, samples, cvt_use_cache=True):
                     return np.expand_dims(np.loadtxt(fname), axis=0)
                 return np.loadtxt(fname)
     # otherwise, compute cvt
-    print("Computing CVT (this can take a while...):", fname)
+    print("Computing CVT:", fname)
     x = np.random.rand(samples, dim)
     k_means = KMeans(
         init="k-means++",

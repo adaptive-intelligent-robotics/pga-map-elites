@@ -8,6 +8,7 @@ import gym
 import numpy as np
 import QDgym_extended
 import torch
+import time
 
 # PyRibs
 from ribs.archives import CVTArchive
@@ -77,6 +78,9 @@ def init_factory(args):
     ############
     # Set envs #
 
+    print("\nInitialising the environments.")
+    time.sleep(0.5)
+
     # Temp env to get env parameters
     temp_env = gym.make(args.env)
     state_dim = temp_env.observation_space.shape[0]
@@ -101,11 +105,13 @@ def init_factory(args):
             args.algo in ["Deep-grid", "MAP-Elites", "CMA-ME", "TD3"]
         ),  # Do not use eval replay buffer
     )
-
-    print("\n\n" + "-" * 80)
+    time.sleep(0.5)
 
     ###########################
     # Set actors architecture #
+
+    print("\nInitialising the policies.")
+
     actor_fn = partial(
         Actor,
         state_dim,
@@ -128,6 +134,8 @@ def init_factory(args):
 
     # DRL and QD-DRL algo do have critic processes
     else:
+        print("\nInitialising the critic process.")
+
         replay_fn = partial(ReplayBuffer, state_dim, action_dim, dim_map)
         critic_fn = partial(
             Critic,
@@ -171,10 +179,13 @@ def init_factory(args):
 
     ##########################
     # Set selection operator #
+
+    print("\nInitialising the algorithm.")
     selection_op = ArchiveSelector("uniform")
 
     ##################
     # Set variations #
+
     variations_scheduler = VariationScheduler(selection_op, args.proportion_evo)
     use_ga_variation = not (args.algo in ["TD3", "CMA-ME"])
     use_pg_variation = (args.algo == "PGA-MAP-Elites") and (
@@ -255,6 +266,7 @@ def init_factory(args):
     a_evals = 0  # number of evaluations since the last archive save
     counter = count(0)
 
+    print("\nFinished initialisation.\n")
     print("-" * 80 + "\n\n")
 
     return (

@@ -127,7 +127,6 @@ class VariationMetrics:
         file_name.flush()
 
     def write(self):
-        print("  -> Writting stats for", self.label, "variation")
         self._sub_write(
             self.instant_file,
             self.instant_nb_evolved,

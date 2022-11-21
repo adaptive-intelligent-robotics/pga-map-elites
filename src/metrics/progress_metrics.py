@@ -84,9 +84,6 @@ class ProgressMetrics:
                 self.max_actor_id,
             )
         )
-        print(
-            f"    -> Max fitness: {self.max_fitness} --- Mean fit: {self.mean_fitness}"
-        )
         self.file.flush()
 
     def reset(self):

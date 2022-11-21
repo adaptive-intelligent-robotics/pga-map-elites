@@ -96,8 +96,8 @@ def map_elites(
     # Main loop
     while n_evals < max_evals:
 
-        print(f"\n[{n_evals}/{int(max_evals)}]")
-        print(f"Number of solutions: {len(archive)}")
+        print(f"\nIteration: [{n_evals}/{int(max_evals)}]")
+        print(f"Number of solutions in the current archive: {len(archive)}")
         start = lib_time.time()
 
         to_evaluate = []  # Offspring to evaluate
@@ -108,7 +108,7 @@ def map_elites(
 
         # If using PyRibs
         if optimizer is not None:
-            print("Optimizer loop")
+            print("  Applying optimizer loop from PyRibs.")
             solutions = optimizer.ask()
             n_cov_updates = [
                 n_cov_updates[i]
@@ -124,19 +124,21 @@ def map_elites(
 
         # If not using PyRibs and random initialisation
         elif n_evals < random_init:
-            print("Random Loop")
+            print("  Randomly initialising offspring.")
             for _ in range(0, init_batch_size):
                 to_evaluate += [actor_fn()]  # Randomly initialised actors
                 variation_types += ["random"]
 
         # If not using PyRibs and Variation/selection loop
         else:
-            print("Selection/Variation Loop")
 
             if critic_proc is not None:
+                print("  Training the Critic and greedy network.")
                 critic, actors, states, _ = critic_proc.get_critic()
             else:
                 critic, actors, states = None, [], None
+
+            print("  Selecting and variating the offspring.")
 
             # Add to offsprings
             to_evaluate = copy.deepcopy(actors)
@@ -155,11 +157,10 @@ def map_elites(
             to_evaluate += new_controllers
             variation_types += controllers_variations
 
-        print(variation_types)
-
         #######################
         # Evaluate offsprings #
 
+        print("  Evaluating the offspring.")
         evaluations = envs.eval_policy(to_evaluate)
 
         # If resampling
@@ -201,6 +202,8 @@ def map_elites(
 
         ##################
         # Add to archive #
+
+        print("  Adding the offspring to the archive.")
 
         # If using PyRibs
         if optimizer is not None:
@@ -245,14 +248,14 @@ def map_elites(
 
         # Print iteration time
         end = lib_time.time()
-        print("Iteration took:", end - start)
+        print("Finished iteration, total length (s):", end - start)
 
         ############################
         # Save states and archives #
 
         if b_evals < save_stat_period or save_stat_period == -1:
             continue
-        print("\nWritting stats")
+        print("\nComputing and writting all the metrics.")
         start_stat = lib_time.time()
 
         # Create the archive to compute stats
@@ -262,7 +265,7 @@ def map_elites(
 
         # Write current archive
         if a_evals >= save_archive_period and save_archive_period != -1:
-            print("  -> Saving archives")
+            print("  -> Writting archives")
             save_archive(archive_stat, n_evals, archive_filename, save_path)  # Archive
 
         # Reevaluate archive
@@ -274,7 +277,7 @@ def map_elites(
 
             # Write reeval archive
             if a_evals >= save_archive_period and save_archive_period != -1:
-                print("  -> Saving reeval archives")
+                print("  -> Writting reevaluated archives")
                 save_archive(
                     new_archive,
                     n_evals,
@@ -292,7 +295,7 @@ def map_elites(
                     suffixe="robust",
                 )
 
-            print("  -> Saving reeval stats")
+            print("  -> Writting reevaluated metrics")
             # Write progress
             for a_label, a_archive in [
                 ("reeval", new_archive),
@@ -302,7 +305,7 @@ def map_elites(
                 all_progress_metrics.write(a_label)
                 all_progress_metrics.reset(a_label)
 
-        print("  -> Saving stats")
+            print("  -> Writting all non-reevaluated metrics")
 
         # Write progress
         all_progress_metrics.update(
@@ -316,7 +319,8 @@ def map_elites(
         if a_evals >= save_archive_period and save_archive_period != -1:
             a_evals = 0
         end_stat = lib_time.time()
-        print("Finished writting stats, took:", end_stat - start_stat)
+        print("Finished writting metrics, total legnth (s):", end_stat - start_stat)
+        print("\n")
 
     # End of Main loop
     all_variation_metrics.write()
