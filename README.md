@@ -49,7 +49,19 @@ We also propose a containerised version of our environment to replicate our expe
 
 Running this code from source requires Python 3.8, and the libraries given in `requirements.txt` (Warning: preferably use a virtual environment for this specific project, to avoid breaking the dependencies of your other projects).
 In Ubuntu, installing the dependencies can be done using the following command:
-```pip install -r requirements.txt```
+
+```shell script
+pip install -r requirements.txt
+```
+
+### Troubleshooting 
+Depending on your setup, you might get an error when installing scikit-learn from the `requirements.txt`, this is due to pip trying to install the package in the wrong order. You can enforce it by first running:
+
+```shell script
+pip3 install numpy==1.19.5 Cython==0.29.21 GPUtil==1.4.0 psutil==5.9.0
+```
+
+You can then run the `requirements.txt` installation safely.
 
 ## Run from source
 
