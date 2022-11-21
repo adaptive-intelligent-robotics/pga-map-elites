@@ -1,8 +1,12 @@
+Cython==0.29.21
+GPUtil==1.4.0
 gym==0.15.4
 matplotlib==3.3.4
 numpy==1.19.5
 pandas==1.1.5
+psutil==5.9.0
 pybullet==3.0.8
+git+https://github.com/adaptive-intelligent-robotics/QDgym_extended.git#egg=QDgym_extended
 ribs==0.4.0
 scikit-learn==0.21.3
 seaborn==0.11.2

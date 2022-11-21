@@ -17,8 +17,8 @@ We provide an executable precompiled Singularity container [here](https://drive.
 
 # Libraries and dependencies
 
-The implementation of all tasks and algorithms is in Python.
-It requires the standard Python libraries, [Numpy](https://numpy.org/), [Scikit-learn](https://pypi.org/project/scikit-learn/) for the implementation of the CVT archives, and [PyRibs](https://pyribs.org/) for CMA-MAP-Elites.
+The implementation of all tasks and algorithms is in Python 3.8.
+It requires the standard Python 3.8 libraries, [Numpy](https://numpy.org/), [Scikit-learn](https://pypi.org/project/scikit-learn/) for the implementation of the CVT archives, and [PyRibs](https://pyribs.org/) for CMA-MAP-Elites.
 All algorithms learn Deep Neural Network controllers, requiring the [PyTorch](https://pytorch.org/) library, and all the tasks are implemented in the [QDgym_extended library](https://github.com/adaptive-intelligent-robotics/QDgym_extended) that relies on [Gym](https://gym.openai.com/) and [Pybullet](https://pybullet.org/wordpress/).
 Furthermore, the analysis of the results is based on [Panda](https://pandas.pydata.org/), [Matplotlib](https://matplotlib.org/) and [Seaborn](https://seaborn.pydata.org/index.html) libraries.
 
@@ -44,6 +44,12 @@ We also propose a containerised version of our environment to replicate our expe
 
 
 # Execution from source
+
+## Dependencies to run form source
+
+Running this code from source requires Python 3.8, and the libraries given in `requirements.txt` (Warning: preferably use a virtual environment for this specific project, to avoid breaking the dependencies of your other projects).
+In Ubuntu, installing the dependencies can be done using the following command:
+```pip install -r requirements.txt```
 
 ## Run from source
 
