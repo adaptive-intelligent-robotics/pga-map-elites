@@ -230,12 +230,8 @@ if __name__ == "__main__":
 
     # End critic process
     print("\nClosing critic process.")
-    if critic_proc is not None:
-        critic, replay_buffer = critic_proc.close()  # this seems to never end atm
-        critic.save(f"{args.save_path}/models/{args.file_name}_critic_" + str(n_evals))
-    else:
-        critic, replay_buffer = False, False
-    print("Closed critic process and saved it.")
+    critic_proc.close()
+    print("Closed critic process.")
 
     # End Variation scheduler
     print("\nClosing variation scheduler.")
@@ -250,8 +246,6 @@ if __name__ == "__main__":
         a_evals,
         archive,
         greedy,
-        critic,
-        replay_buffer,
         env_rng_states,
         kdt,
         Individual.get_counter(),

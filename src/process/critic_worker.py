@@ -42,11 +42,8 @@ def critic_worker(
     while True:
         try:
 
-            # if closing process
             if close_process.is_set():
                 print("Close Critic Process")
-                remote.send((critic, replay_buffer))
-                time.sleep(10)
                 break
 
             # collect new transitions

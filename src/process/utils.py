@@ -19,8 +19,6 @@ def save(
     a_evals,
     archive,
     greedy,
-    critic,
-    replay_buffer,
     env_rng_states,
     kdt,
     count,
@@ -39,17 +37,6 @@ def save(
     }
     with open(f"{args.save_path}/checkpoint/{args.file_name}_checkpoint", "wb") as f:
         pickle.dump(checkpoint_dict, f)
-    if critic is not False:
-        with open(
-            f"{args.save_path}/checkpoint/{args.file_name}_checkpoint_critic", "wb"
-        ) as f:
-            pickle.dump(critic, f)
-    if replay_buffer is not False:
-        with open(
-            f"{args.save_path}/checkpoint/{args.file_name}_checkpoint_replay_buffer",
-            "wb",
-        ) as f:
-            pickle.dump(replay_buffer, f)
 
 
 def make_env(env_id, random_state=None):

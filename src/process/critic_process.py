@@ -47,7 +47,7 @@ class CriticProcess:
         # print("Global sync flag set to True")
         # receive data from Remote - prepared in critic_worker worker function
         critic, actor, states, critic_loss, time = self.local.recv()
-        print(f"Train Time: {time} --- Critic Loss: {critic_loss}")
+        print(f"  Critic and greedy total training time (s): {time}")
         return critic, actor, states, time
 
     def close(self):
@@ -62,11 +62,6 @@ class CriticProcess:
         # set the close_process flag to True
         self.close_process.set()
 
-        print("--- Launching self.local.recv() ---")
-        critic, replay_buffer = self.local.recv()
-        print("--- Finish self.local.recv() ---")
-
         # terminate the critic process
         self.critic_process.terminate()
 
-        return critic, replay_buffer
