@@ -12,6 +12,7 @@ It proposes an implementation of several algorithms compared within the paper:
 
 This code compares these approaches on the [QDgym_extended tasks](https://github.com/adaptive-intelligent-robotics/QDgym_extended) based on the [QDgym tasks](https://github.com/ollenilsson19/QDgym).
 It is based on the original repository of [PGA-MAP-Elites](https://github.com/ollenilsson19/PGA-MAP-Elites), merging the repository of [TD3](https://github.com/sfujim/TD3) with the [PyMAP-Elites](https://github.com/resibots/pymap_elites) implementation of MAP-Elites.
+We provide the data used to generate the paper results in zip files in `2022_results`.
 We provide an executable precompiled Singularity container [here](https://drive.google.com/file/d/1XsapzTxorN5GVBcd3C2f-yWkn5odhEIv/view?usp=sharing).
 
 
@@ -41,6 +42,7 @@ We also propose a containerised version of our environment to replicate our expe
 	+ `metrics` contains the definition of all metrics used in the paper.
 	+ `analysis` defines all the functions needed to analyse the data output by a run.
 + `singularity` contains all files needed to compile the Singularity container for this experiment. You can find a precompiled container for this repository [here](https://drive.google.com/file/d/1XsapzTxorN5GVBcd3C2f-yWkn5odhEIv/view?usp=sharing).
++ `2022_results` contains the data used to generate the paper results.
 
 
 # Execution from source
@@ -82,14 +84,15 @@ Be careful that the seed is fixed for a given run and needs to be passed as an a
 ## Analysis from source
 
 
-The output of a run contains `.csv`, `.dat` and `.pickle`  files that can be analysed and plotted using `run_plots.py`. To execute it, use:
+The output of a run contains `.csv`, `.dat` and `.pickle` files that can be analysed and plotted using `run_plots.py`. To execute it, use:
 
 ```shell script
 python3 run_plots.py --save_path *path_to_stats_files* --results_path *path_to_save_graphs* --max_evals *max_evals_of_run*
 ```
 
-`--save_path`specifies where the path to the files output by the run, `--results_path`specifies where to save the resulting graphs and `--max_evals` allows selecting which archive should be plotted as the final archive. If there is no archive corresponding to this value, no archive plots will be displayed.
+`--save_path`specifies where the path to the files output by the run, `--results_path` specifies where to save the resulting graphs and `--max_evals` allows selecting which archive should be plotted as the final archive. If there is no archive corresponding to this value, no archive plots will be displayed.
 Other arguments are listed in `run_plots.py`.
+We provide the data used to generate the paper results in zip files in `2022_results`.
 
 `run_plots.py` also allows visualising the policies in the PyBullet environment using the `--visualisation` argument.
 
